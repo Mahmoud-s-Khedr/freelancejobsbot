@@ -15,11 +15,12 @@ import { scrapeForasnaSource } from './forasna.js'
 import { scrapeTanqeebSource } from './tanqeeb.js'
 import { scrapeBaytSource } from './bayt.js'
 import { scrapeWuzzufSource } from './wuzzuf.js'
+import { scrapeGoogleJobsSource } from './google_jobs.js'
 import { formatTelegramMessage } from './format.js'
 import { FetchHtmlError, fetchHtmlWithRetry } from './http.js'
 import { isTechJob } from './filter.js'
 
-export type SourceName = 'mostaql' | 'khamsat' | 'ureed' | 'baaeed' | 'nafezly' | 'bahr' | 'forasna' | 'tanqeeb' | 'bayt' | 'wuzzuf'
+export type SourceName = 'mostaql' | 'khamsat' | 'ureed' | 'baaeed' | 'nafezly' | 'bahr' | 'forasna' | 'tanqeeb' | 'bayt' | 'wuzzuf' | 'google_jobs'
 
 export type SourceConfig = {
   name: SourceName
@@ -105,6 +106,11 @@ const SOURCES: SourceConfig[] = [
     name: 'wuzzuf',
     url: process.env.WUZZUF_SCRAPE_URL || 'https://wuzzuf.net/search/jobs?q=&a=hpb',
     baseUrl: 'https://wuzzuf.net'
+  },
+  {
+    name: 'google_jobs',
+    url: process.env.GOOGLE_JOBS_QUERY || 'software developer remote',
+    baseUrl: 'https://google.com'
   }
 ]
 
@@ -118,7 +124,8 @@ const sourceHealth: Record<SourceName, SourceHealthState> = {
   forasna: { consecutiveFailures: 0 },
   tanqeeb: { consecutiveFailures: 0 },
   bayt: { consecutiveFailures: 0 },
-  wuzzuf: { consecutiveFailures: 0 }
+  wuzzuf: { consecutiveFailures: 0 },
+  google_jobs: { consecutiveFailures: 0 }
 }
 
 let skippedDueToRunning = 0
@@ -188,6 +195,7 @@ function looksLikeJobUrl(source: SourceName, url: string): boolean {
   if (source === 'tanqeeb') return parsed.hostname.includes('tanqeeb.com')
   if (source === 'bayt') return parsed.hostname.includes('bayt.com')
   if (source === 'wuzzuf') return parsed.hostname.includes('wuzzuf.net')
+  if (source === 'google_jobs') return parsed.hostname.includes('google.com') || parsed.hostname.includes('google.com.eg')
 
   return false
 }
@@ -503,6 +511,7 @@ async function scrapeSource(source: SourceConfig): Promise<JobPostInput[]> {
   if (source.name === 'tanqeeb') return scrapeTanqeebSource(source)
   if (source.name === 'bayt') return scrapeBaytSource(source)
   if (source.name === 'wuzzuf') return scrapeWuzzufSource(source)
+  if (source.name === 'google_jobs') return scrapeGoogleJobsSource(source)
   throw new Error(`Unknown source: ${source.name}`)
 }
 
