@@ -8,18 +8,14 @@ import { prisma } from './db.js'
 import { normalizeUrl, parseMostaqlListing, parseMostaqlProjectDetail } from './mostaql.js'
 import { buildKhamsatPageUrl, parseKhamsatDetail, parseKhamsatListing } from './khamsat.js'
 import { scrapeUreedSource } from './ureed.js'
-import { scrapeBaaeedSource } from './baaeed.js'
 import { scrapeNafezlySource } from './nafezly.js'
 import { scrapeBahrSource } from './bahr.js'
-import { scrapeForasnaSource } from './forasna.js'
-import { scrapeTanqeebSource } from './tanqeeb.js'
-import { scrapeWuzzufSource } from './wuzzuf.js'
 import { formatTelegramMessage } from './format.js'
 import { FetchHtmlError, fetchHtmlWithRetry } from './http.js'
 import { isTechJob } from './filter.js'
 import { cleanText } from './utils.js'
 
-export type SourceName = 'mostaql' | 'khamsat' | 'ureed' | 'baaeed' | 'nafezly' | 'bahr' | 'forasna' | 'tanqeeb' | 'wuzzuf'
+export type SourceName = 'mostaql' | 'khamsat' | 'ureed' | 'nafezly' | 'bahr'
 
 export type SourceConfig = {
   name: SourceName
@@ -72,11 +68,6 @@ export const SOURCES: SourceConfig[] = [
     baseUrl: 'https://app.ureed.com'
   },
   {
-    name: 'baaeed',
-    url: process.env.BAAEED_SCRAPE_URL || 'https://baaeed.com/remote-jobs',
-    baseUrl: 'https://baaeed.com'
-  },
-  {
     name: 'nafezly',
     url: process.env.NAFEZLY_SCRAPE_URL || 'https://nafezly.com/projects',
     baseUrl: 'https://nafezly.com'
@@ -85,21 +76,6 @@ export const SOURCES: SourceConfig[] = [
     name: 'bahr',
     url: process.env.BAHR_SCRAPE_URL || 'https://bahr.sa/projects?sortBy=publishDate_DESC',
     baseUrl: 'https://bahr.sa'
-  },
-  {
-    name: 'forasna',
-    url: process.env.FORASNA_SCRAPE_URL || 'https://forasna.com/%D9%88%D8%B8%D8%A7%D8%A6%D9%81-%D8%AE%D8%A7%D9%84%D9%8A%D8%A9?query=',
-    baseUrl: 'https://forasna.com'
-  },
-  {
-    name: 'tanqeeb',
-    url: process.env.TANQEEB_SCRAPE_URL || 'https://egypt.tanqeeb.com/ar/jobs/search?keywords=&country=-1&state=0&category=-1&workplace=0&search_period=0&lang=all&page_no=1&refine%5Bonly_featured%5D=1',
-    baseUrl: 'https://egypt.tanqeeb.com'
-  },
-  {
-    name: 'wuzzuf',
-    url: process.env.WUZZUF_SCRAPE_URL || 'https://wuzzuf.net/search/jobs?q=&a=hpb',
-    baseUrl: 'https://wuzzuf.net'
   }
 ]
 
@@ -107,12 +83,8 @@ const sourceHealth: Record<SourceName, SourceHealthState> = {
   mostaql: { consecutiveFailures: 0 },
   khamsat: { consecutiveFailures: 0 },
   ureed: { consecutiveFailures: 0 },
-  baaeed: { consecutiveFailures: 0 },
   nafezly: { consecutiveFailures: 0 },
-  bahr: { consecutiveFailures: 0 },
-  forasna: { consecutiveFailures: 0 },
-  tanqeeb: { consecutiveFailures: 0 },
-  wuzzuf: { consecutiveFailures: 0 }
+  bahr: { consecutiveFailures: 0 }
 }
 
 let skippedDueToRunning = 0
@@ -171,12 +143,8 @@ function looksLikeJobUrl(source: SourceName, url: string): boolean {
   }
 
   if (source === 'ureed') return parsed.hostname.includes('ureed.com')
-  if (source === 'baaeed') return parsed.hostname.includes('baaeed.com')
   if (source === 'nafezly') return parsed.hostname.includes('nafezly.com')
   if (source === 'bahr') return parsed.hostname.includes('bahr.sa')
-  if (source === 'forasna') return parsed.hostname.includes('forasna.com')
-  if (source === 'tanqeeb') return parsed.hostname.includes('tanqeeb.com')
-  if (source === 'wuzzuf') return parsed.hostname.includes('wuzzuf.net')
 
   return false
 }
@@ -485,12 +453,8 @@ export async function scrapeSource(source: SourceConfig): Promise<JobPostInput[]
   if (source.name === 'mostaql') return scrapeMostaqlSource(source)
   if (source.name === 'khamsat') return scrapeKhamsatSource(source)
   if (source.name === 'ureed') return scrapeUreedSource(source)
-  if (source.name === 'baaeed') return scrapeBaaeedSource(source)
   if (source.name === 'nafezly') return scrapeNafezlySource(source)
   if (source.name === 'bahr') return scrapeBahrSource(source)
-  if (source.name === 'forasna') return scrapeForasnaSource(source)
-  if (source.name === 'tanqeeb') return scrapeTanqeebSource(source)
-  if (source.name === 'wuzzuf') return scrapeWuzzufSource(source)
   throw new Error(`Unknown source: ${source.name}`)
 }
 
