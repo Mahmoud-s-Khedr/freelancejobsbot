@@ -51,7 +51,8 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  JobPost: 'JobPost'
+  JobPost: 'JobPost',
+  TelegramQueue: 'TelegramQueue'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -91,6 +92,17 @@ export const JobPostScalarFieldEnum = {
 } as const
 
 export type JobPostScalarFieldEnum = (typeof JobPostScalarFieldEnum)[keyof typeof JobPostScalarFieldEnum]
+
+
+export const TelegramQueueScalarFieldEnum = {
+  id: 'id',
+  jobPostId: 'jobPostId',
+  attempts: 'attempts',
+  createdAt: 'createdAt',
+  failedAt: 'failedAt'
+} as const
+
+export type TelegramQueueScalarFieldEnum = (typeof TelegramQueueScalarFieldEnum)[keyof typeof TelegramQueueScalarFieldEnum]
 
 
 export const SortOrder = {

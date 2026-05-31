@@ -384,7 +384,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 
 export const ModelName = {
-  JobPost: 'JobPost'
+  JobPost: 'JobPost',
+  TelegramQueue: 'TelegramQueue'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -400,7 +401,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "jobPost"
+    modelProps: "jobPost" | "telegramQueue"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -478,6 +479,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TelegramQueue: {
+      payload: Prisma.$TelegramQueuePayload<ExtArgs>
+      fields: Prisma.TelegramQueueFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TelegramQueueFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramQueuePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TelegramQueueFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramQueuePayload>
+        }
+        findFirst: {
+          args: Prisma.TelegramQueueFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramQueuePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TelegramQueueFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramQueuePayload>
+        }
+        findMany: {
+          args: Prisma.TelegramQueueFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramQueuePayload>[]
+        }
+        create: {
+          args: Prisma.TelegramQueueCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramQueuePayload>
+        }
+        createMany: {
+          args: Prisma.TelegramQueueCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TelegramQueueCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramQueuePayload>[]
+        }
+        delete: {
+          args: Prisma.TelegramQueueDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramQueuePayload>
+        }
+        update: {
+          args: Prisma.TelegramQueueUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramQueuePayload>
+        }
+        deleteMany: {
+          args: Prisma.TelegramQueueDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TelegramQueueUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TelegramQueueUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramQueuePayload>[]
+        }
+        upsert: {
+          args: Prisma.TelegramQueueUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TelegramQueuePayload>
+        }
+        aggregate: {
+          args: Prisma.TelegramQueueAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTelegramQueue>
+        }
+        groupBy: {
+          args: Prisma.TelegramQueueGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TelegramQueueGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TelegramQueueCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TelegramQueueCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -538,6 +613,17 @@ export const JobPostScalarFieldEnum = {
 } as const
 
 export type JobPostScalarFieldEnum = (typeof JobPostScalarFieldEnum)[keyof typeof JobPostScalarFieldEnum]
+
+
+export const TelegramQueueScalarFieldEnum = {
+  id: 'id',
+  jobPostId: 'jobPostId',
+  attempts: 'attempts',
+  createdAt: 'createdAt',
+  failedAt: 'failedAt'
+} as const
+
+export type TelegramQueueScalarFieldEnum = (typeof TelegramQueueScalarFieldEnum)[keyof typeof TelegramQueueScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -700,6 +786,7 @@ export type PrismaClientOptions = ({
 }
 export type GlobalOmitConfig = {
   jobPost?: Prisma.JobPostOmit
+  telegramQueue?: Prisma.TelegramQueueOmit
 }
 
 /* Types for Logging */

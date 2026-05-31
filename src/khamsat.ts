@@ -1,5 +1,6 @@
 import * as cheerio from 'cheerio'
 import { normalizeUrl } from './mostaql.js'
+import { cleanText } from './utils.js'
 
 export type KhamsatListingItem = {
   source: 'khamsat'
@@ -26,9 +27,6 @@ export type KhamsatDetailData = {
   commentCount?: number
 }
 
-function cleanText(value: string): string {
-  return value.replace(/\s+/g, ' ').trim()
-}
 
 function parseKhamsatGmtDate(raw: string | undefined): Date | undefined {
   if (!raw) return undefined

@@ -1,4 +1,5 @@
 import * as cheerio from 'cheerio'
+import { cleanText } from './utils.js'
 
 export type MostaqlListingItem = {
   source: 'mostaql'
@@ -22,10 +23,6 @@ export type MostaqlDetailData = {
   budgetText?: string
   durationText?: string
   skills?: string[]
-}
-
-function cleanText(value: string): string {
-  return value.replace(/\s+/g, ' ').trim()
 }
 
 export function normalizeUrl(href: string, baseUrl: string): string {

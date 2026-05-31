@@ -9,4 +9,5 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/JobPost.js'
+export type * from './models/TelegramQueue.js'
 export type * from './commonInputTypes.js'

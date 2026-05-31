@@ -1,40 +1,39 @@
 export const DEFAULT_TECH_KEYWORDS_EN = [
-  // General Software & Web Development
+  // General Software & Web Development (Excluding hyper-generic terms like 'web', 'app', 'server', 'r', 'ai')
   'programming', 'developer', 'develop', 'development', 'programmer', 'software', 'engineer', 'engineering',
-  'web', 'website', 'app', 'application', 'mobile', 'frontend', 'backend', 'fullstack', 'coder', 'coding',
-  'api', 'apis', 'restful', 'graphql', 'json', 'xml', 'ajax', 'websocket', 'websockets', 'pwa', 'spa', 'mvp',
-  'refactoring', 'optimization', 'architecture', 'responsive', 'ui/ux', 'ui-ux', 'mockup',
+  'frontend', 'backend', 'fullstack', 'coder', 'coding', 'api', 'apis', 'restful', 'graphql',
+  'refactoring', 'optimization', 'architecture',
 
   // Languages
   'python', 'javascript', 'typescript', 'js', 'ts', 'php', 'java', 'kotlin', 'swift', 'golang', 'rust',
   'ruby', 'c#', 'c++', 'objective-c', 'dart', 'scala', 'perl', 'bash', 'powershell', 'shell', 'html', 'css', 'sass', 'less',
-  'html5', 'css3', 'sql', 'plsql', 't-sql', 'nosql', 'r', 'solidity', 'vyper', 'elixir', 'haskell', 'assembly',
+  'html5', 'css3', 'sql', 'plsql', 't-sql', 'nosql', 'solidity', 'vyper', 'elixir', 'haskell', 'assembly',
 
   // Frameworks & Libraries
-  'react', 'reactjs', 'react.js', 'angular', 'angularjs', 'vue', 'vuejs', 'vue.js', 'svelte', 'sveltekits', 'sveltekit',
+  'react', 'reactjs', 'react.js', 'angular', 'angularjs', 'vue', 'vuejs', 'vue.js', 'svelte', 'sveltekit',
   'nextjs', 'next.js', 'nuxtjs', 'nuxt.js', 'express', 'expressjs', 'nestjs', 'django', 'flask', 'fastapi',
-  'laravel', 'symfony', 'codeigniter', 'yii', 'yii2', 'spring', 'springboot', 'rails', 'ruby on rails',
+  'laravel', 'symfony', 'codeigniter', 'yii', 'spring', 'springboot', 'rails', 'ruby on rails',
   'flutter', 'reactnative', 'react-native', 'xamarin', 'ionic', 'jquery', 'bootstrap', 'tailwind', 'tailwindcss',
   'redux', 'pinia', 'rxjs', 'electron', 'capacitor', 'cordova', 'quasar', 'solidjs', 'astro', 'remix',
-  'threejs', 'three.js', 'chartjs', 'chart.js', 'd3js', 'd3.js', 'alpinejs', 'alpine.js',
+  'threejs', 'three.js', 'chartjs', 'd3js', 'alpinejs',
 
   // Databases, ORMs, and Caching
   'database', 'databases', 'mysql', 'postgresql', 'postgres', 'sqlite', 'mongodb', 'mongo', 'redis', 'mariadb',
   'cassandra', 'oracle', 'dynamodb', 'firebase', 'firestore', 'supabase', 'prisma', 'sequelize', 'mongoose',
-  'typeorm', 'knex', 'elasticsearch', 'elastic', 'solr', 'memcached', 'couchdb', 'neo4j', 'influxdb',
+  'typeorm', 'knex', 'elasticsearch', 'solr', 'memcached', 'couchdb', 'neo4j', 'influxdb',
 
-  // DevOps, Cloud, Servers, and Platforms
-  'devops', 'docker', 'kubernetes', 'k8s', 'git', 'github', 'gitlab', 'bitbucket', 'aws', 'amazon', 'gcp', 'google cloud',
+  // DevOps & Platforms
+  'devops', 'docker', 'kubernetes', 'k8s', 'git', 'github', 'gitlab', 'bitbucket', 'aws', 'amazon', 'gcp',
   'azure', 'vercel', 'netlify', 'heroku', 'linux', 'ubuntu', 'debian', 'centos', 'redhat', 'fedora', 'nginx', 'apache',
-  'hosting', 'server', 'servers', 'cloud', 'cicd', 'ci/cd', 'dns', 'ssl', 'cpanel', 'plesk', 'whm', 'vps', 'ssh',
+  'cicd', 'ci/cd', 'dns', 'ssl', 'cpanel', 'plesk', 'whm', 'vps', 'ssh',
   'cloudflare', 'fastly', 'digitalocean', 'linode', 'terraform', 'ansible', 'jenkins', 'github actions',
 
-  // AI, Data Science, and Machine Learning
-  'ai', 'artificial intelligence', 'machine learning', 'machinelearning', 'deeplearning', 'deep learning', 'nlp',
+  // AI & Data Science
+  'artificial intelligence', 'machine learning', 'machinelearning', 'deeplearning', 'deep learning', 'nlp',
   'llm', 'llms', 'gpt', 'chatgpt', 'openai', 'tensorflow', 'pytorch', 'keras', 'pandas', 'numpy', 'scipy', 'sklearn',
-  'data science', 'datascience', 'data analysis', 'dataanalyst', 'scraper', 'scraping', 'crawler', 'crawling',
+  'data science', 'datascience', 'scraper', 'scraping', 'crawler', 'crawling',
   'selenium', 'puppeteer', 'playwright', 'scrapy', 'beautifulsoup', 'langchain', 'llamaindex', 'pinecone', 'chromadb',
-  'huggingface', 'computer vision', 'opencv', 'ocr', 'tesseract', 'powerbi', 'power bi', 'tableau', 'qlik',
+  'huggingface', 'computer vision', 'opencv', 'ocr', 'tesseract', 'powerbi', 'power bi', 'tableau',
 
   // Platforms, CMS & E-commerce
   'wordpress', 'wp', 'woocommerce', 'shopify', 'webflow', 'bubble', 'wix', 'squarespace', 'magento', 'magento2',
@@ -46,36 +45,25 @@ export const DEFAULT_TECH_KEYWORDS_EN = [
   'stripe', 'paypal', 'checkout.com', 'payfort', 'moyasar', 'tap payments', 'paytabs', 'paytab', 'hyperpay',
   'webhook', 'webhooks', 'oauth', 'oauth2', 'jwt', 'auth0',
 
-  // Games & Graphics
+  // Games, Security, Web3
   'unity', 'unity3d', 'unreal', 'unreal engine', 'godot', 'gamedev', 'opengl', 'directx', 'threejs',
-
-  // Cybersecurity & Networks
   'cybersecurity', 'security', 'pentest', 'pentesting', 'hacking', 'hack', 'ethical hacking', 'metasploit',
   'wireshark', 'nmap', 'burpsuite', 'owasp', 'firewall', 'vpn', 'openvpn', 'wireguard',
-
-  // Web3 & Blockchain
-  'blockchain', 'web3', 'solidity', 'vyper', 'smart contract', 'smartcontract', 'ethereum', 'bitcoin', 'crypto',
+  'blockchain', 'web3', 'smart contract', 'smartcontract', 'ethereum', 'bitcoin', 'crypto',
   'cryptocurrency', 'token', 'nft', 'ipfs', 'truffle', 'hardhat', 'ethers.js', 'web3.js',
-
-  // Bots & Messaging
   'bot', 'bots', 'chatbot', 'telegrambot', 'whatsappbot', 'discordbot', 'slackbot'
 ];
 
 export const DEFAULT_TECH_KEYWORDS_AR = [
   // General Software & Web Development (Arabic)
   'برمجة', 'مبرمج', 'مبرمجين', 'مطور', 'مطورين', 'برمجيات', 'هندسة البرمجيات',
-  'تطبيق', 'تطبيقات', 'موقع الكتروني', 'موقع إلكتروني', 'موقع الكترونى', 'مواقع الكترونية', 'مواقع إلكترونية',
-  'ويب', 'موقع ويب', 'واجهة برمجة', 'واجهات برمجة', 'فرونت اند', 'فرونت إند', 'باك اند', 'باك إند', 'فول ستاك',
-  'كود', 'أكواد', 'اكواد', 'سكريبت', 'سكربت', 'سكريبتات', 'سكربتات', 'قوالب', 'قالب', 'بلجن', 'بلجنات',
-  'إضافة برمجية', 'اضافة برمجية', 'اضافة وردبريس', 'إضافة ووردبريس', 'تعديل برمجي', 'تعديل اكواد',
-
-  // Databases & Server (Arabic)
-  'قاعدة بيانات', 'قواعد بيانات', 'سيرفر', 'سيرفرات', 'خادم', 'خوادم', 'استضافة', 'استضافات', 'دومين', 'دي ان اس', 'لوحة تحكم', 'لوحة التحكم', 'سي بانل', 'cpanel',
-  'استضافة مواقع', 'نقل موقع', 'نسخة احتياطية', 'نسخ احتياطي',
+  'فرونت اند', 'فرونت إند', 'باك اند', 'باك إند', 'فول ستاك',
+  'قاعدة بيانات', 'قواعد بيانات', 'سيرفر', 'سيرفرات', 'خادم', 'خوادم', 'استضافة مواقع',
+  'أكواد', 'أكواد البرمجة',
 
   // Tech Stacks & Platforms (Arabic Transliterations)
   'وردبريس', 'ووردبريس', 'وورد بريس', 'شوبيفاي', 'شوبيفاى', 'منصة سلة', 'متجر سلة', 'منصة زد', 'متجر زد',
-  'بلوجر', 'بلوقير', 'بلوقر', 'شات بوت', 'واتساب بوت', 'تليجرام بوت', 'تلجرام بوت', 'بوت تليجرام', 'بوت تلجرام',
+  'شات بوت', 'واتساب بوت', 'تليجرام بوت', 'تلجرام بوت', 'بوت تليجرام', 'بوت تلجرام',
   'بوابة دفع', 'بوابات دفع', 'ربط بوابة', 'سترايب', 'بايبال', 'باي بال', 'ووكومرس', 'اودو', 'ماجنتو', 'أوبن كارت',
   'اوبن كارت',
 
@@ -85,28 +73,45 @@ export const DEFAULT_TECH_KEYWORDS_AR = [
   'ريأكت', 'نود جي اس', 'لارافيل', 'لارفيل', 'بي اتش بي', 'بي إتش بي', 'سي بلس بلس', 'سي شارب',
 
   // Advanced Tech & Security (Arabic)
-  'ذكاء اصطناعي', 'ذكاء إصطناعي', 'تعلم الآلة', 'تعلم الالة', 'تحليل بيانات', 'منقب بيانات',
-  'سحب بيانات', 'استخراج بيانات', 'قشط بيانات', 'كراولر', 'أمن سيبراني', 'امن سيبراني', 'امن سيبرانى',
+  'ذكاء اصطناعي', 'ذكاء إصطناعي', 'تعلم الآلة', 'تعلم الالة', 'أمن سيبراني', 'امن سيبراني', 'امن سيبرانى',
   'أتمتة', 'اتمتة', 'روبوتات', 'روبوت'
 ];
 
 export interface FilterJobInput {
   source: string;
   title: string;
-  description?: string;
-  rawText?: string;
-  skills?: string[] | string;
-  category?: string;
+  description?: string | null;
+  rawText?: string | null;
+  skills?: string[] | string | null;
+  category?: string | null;
 }
+
+const EXCLUDE_TITLE_CATEGORY_REGEXP = new RegExp(
+  '(?:' +
+  [
+    'تعليق صوتي', 'تسجيل صوتي', 'معلق صوتي', 'صوت', 'فويس اوفر', 'voice over', 'voiceover', 'مؤدي صوت', 'مؤدية صوت',
+    'تصميم داخلي', 'ديكور', 'معماري', 'سيراميك', 'أثاث',
+    'كول سنتر', 'call center', 'خدمة عملاء', 'استقبال',
+    'كتابة مقالات', 'كتابة محتوى', 'مقال', 'مقالات', 'محرر محتوى', 'منشورات', 'تغريدات',
+    'ترجمة', 'مترجم', 'translation', 'translator',
+    'موشن جرافيك', 'موشن', 'graphic design', 'logo design', 'تصميم شعار', 'هوية بصرية', 'فوتوشوب', 'photoshop',
+    'محاسب', 'محاسبة', 'حسابات', 'دفتر', 'أمين صندوق', 'financial analyst', 'accounting',
+    'مسوق', 'تسويق', 'marketing', 'سوشيال ميديا', 'social media', 'إعلانات ممولة', 'شراكات',
+    'ادخال بيانات', 'إدخال بيانات', 'تفريغ', 'نسخ ولصق', 'كتابة على وورد', 'word'
+  ].join('|') +
+  ')',
+  'i'
+);
+
+const EXCLUDE_GLOBAL_KEYWORDS = [
+  'خصم', 'كود خصم', 'كوبون', 'تجميل', 'رموش', 'شعر', 'بشرة', 'ميك اب', 'ميك أب', 'صالون',
+  'كول سنتر', 'call center', 'voice over', 'voiceover', 'تعليق صوتي', 'تسجيل صوتي', 'مؤدي صوت'
+];
 
 function escapeRegExp(str: string): string {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-/**
- * Combines standard alphanumeric keywords and mixed special character keywords (like c++, c#, next.js)
- * into a single unified regex with optimized boundary requirements.
- */
 function compileAggregatedRegex(keywords: string[]): RegExp {
   const standard: string[] = [];
   const special: string[] = [];
@@ -131,17 +136,24 @@ function compileAggregatedRegex(keywords: string[]): RegExp {
   }
 
   if (parts.length === 0) {
-    return /$^/; // A regex that never matches
+    return /$^/;
   }
 
   return new RegExp(`(?:${parts.join('|')})`, 'i');
 }
 
-// Pre-compile defaults at module load time
-const DEFAULT_ENGLISH_REGEX = compileAggregatedRegex(DEFAULT_TECH_KEYWORDS_EN);
-const DEFAULT_ARABIC_LOWER = DEFAULT_TECH_KEYWORDS_AR.map(kw => kw.toLowerCase());
+function compileArabicRegex(keywords: string[]): RegExp {
+  const parts = keywords.map(kw => {
+    const escaped = escapeRegExp(kw);
+    // Matches common Arabic prefixes (ال, و, ب, ل, ف, لل) and suffixes (s, ات, ة, ين, ون, ية)
+    return `(?:^|[^\\u0600-\\u06FFa-zA-Z0-9_])(?:ال|و|ب|ل|ف|لل)*${escaped}(?:s|ات|ة|ين|ون|ية)?(?:$|[^\\u0600-\\u06FFa-zA-Z0-9_])`;
+  });
+  return new RegExp(`(?:${parts.join('|')})`, 'i');
+}
 
-// Cache state for environment variables to prevent re-compilation on every execution
+const DEFAULT_ENGLISH_REGEX = compileAggregatedRegex(DEFAULT_TECH_KEYWORDS_EN);
+const DEFAULT_ARABIC_REGEX = compileArabicRegex(DEFAULT_TECH_KEYWORDS_AR);
+
 let cachedEnvEn = '';
 let cachedEnvAr = '';
 let compiledEnvRegexEn: RegExp | null = null;
@@ -178,7 +190,15 @@ export function isTechJob(job: FilterJobInput): boolean {
     return true;
   }
 
-  // 2. Auto-match Mostaql tech categories
+  // 2. Normalize and check title and category exclusions
+  const title = (job.title || '').trim().toLowerCase();
+  const category = (job.category || '').trim().toLowerCase();
+
+  if (EXCLUDE_TITLE_CATEGORY_REGEXP.test(title) || EXCLUDE_TITLE_CATEGORY_REGEXP.test(category)) {
+    return false;
+  }
+
+  // 3. Auto-match Mostaql tech categories (if not excluded)
   if (job.source === 'mostaql' && job.category) {
     const cat = job.category.toLowerCase();
     const isMostaqlTech = 
@@ -194,7 +214,7 @@ export function isTechJob(job: FilterJobInput): boolean {
     }
   }
 
-  // 3. Gather text to search
+  // 4. Gather text to inspect
   let skillsText = '';
   if (job.skills) {
     if (Array.isArray(job.skills)) {
@@ -213,21 +233,24 @@ export function isTechJob(job: FilterJobInput): boolean {
     }
   }
 
-  const textsToInspect = [
+  const combinedText = [
     job.title,
     job.description ?? '',
     job.rawText ?? '',
     job.category ?? '',
     skillsText
-  ].map(t => t.trim()).filter(Boolean);
+  ].map(t => t.trim()).filter(Boolean).join('\n');
 
-  if (textsToInspect.length === 0) {
-    return false;
+  const combinedTextLower = combinedText.toLowerCase();
+
+  // Check global exclusions on the combined text
+  for (const keyword of EXCLUDE_GLOBAL_KEYWORDS) {
+    if (combinedTextLower.includes(keyword)) {
+      return false;
+    }
   }
 
-  const combinedText = textsToInspect.join('\n');
-
-  // 4. Test English keywords (Single-pass matching)
+  // 5. Test English keywords (Single-pass matching)
   if (DEFAULT_ENGLISH_REGEX.test(combinedText)) {
     return true;
   }
@@ -237,17 +260,12 @@ export function isTechJob(job: FilterJobInput): boolean {
     return true;
   }
 
-  // 5. Test Arabic keywords (Substring matching)
-  const combinedTextLower = combinedText.toLowerCase();
-
-  // Test static Arabic keywords
-  for (const keyword of DEFAULT_ARABIC_LOWER) {
-    if (combinedTextLower.includes(keyword)) {
-      return true;
-    }
+  // 6. Test Arabic keywords (Morphological Word Boundary matching)
+  if (DEFAULT_ARABIC_REGEX.test(combinedText)) {
+    return true;
   }
 
-  // Test environment custom Arabic keywords
+  // Test environment custom Arabic keywords (Substring matching as fallback)
   for (const keyword of envKeywordsAr) {
     if (combinedTextLower.includes(keyword)) {
       return true;

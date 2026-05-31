@@ -28,9 +28,19 @@ model JobPost {
   sentAt      DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  telegramQueue TelegramQueue?
 
   @@unique([source, sourceProjectId])
   @@index([source])
   @@index([sentAt])
   @@index([lastSeenAt])
+}
+
+model TelegramQueue {
+  id        Int       @id @default(autoincrement())
+  jobPostId Int       @unique
+  jobPost   JobPost   @relation(fields: [jobPostId], references: [id], onDelete: Cascade)
+  attempts  Int       @default(0)
+  createdAt DateTime  @default(now())
+  failedAt  DateTime?
 }

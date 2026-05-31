@@ -4,20 +4,20 @@ export type TelegramJob = {
   source: string
   title: string
   url: string
-  description?: string
-  category?: string
-  status?: string
-  budgetText?: string
-  durationText?: string
-  publishedAt?: Date
-  skills?: string[]
+  description?: string | null
+  category?: string | null
+  status?: string | null
+  budgetText?: string | null
+  durationText?: string | null
+  publishedAt?: Date | null
+  skills?: string[] | null
 }
 
 function escapeHtml(value: string): string {
   return value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
 }
 
-function formatDate(date?: Date): string {
+function formatDate(date?: Date | null): string {
   return date ? date.toISOString() : 'N/A'
 }
 

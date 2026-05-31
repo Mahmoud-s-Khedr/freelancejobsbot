@@ -344,6 +344,7 @@ export type JobPostWhereInput = {
   sentAt?: Prisma.DateTimeNullableFilter<"JobPost"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"JobPost"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"JobPost"> | Date | string
+  telegramQueue?: Prisma.XOR<Prisma.TelegramQueueNullableScalarRelationFilter, Prisma.TelegramQueueWhereInput> | null
 }
 
 export type JobPostOrderByWithRelationInput = {
@@ -367,6 +368,7 @@ export type JobPostOrderByWithRelationInput = {
   sentAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  telegramQueue?: Prisma.TelegramQueueOrderByWithRelationInput
 }
 
 export type JobPostWhereUniqueInput = Prisma.AtLeast<{
@@ -394,6 +396,7 @@ export type JobPostWhereUniqueInput = Prisma.AtLeast<{
   sentAt?: Prisma.DateTimeNullableFilter<"JobPost"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"JobPost"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"JobPost"> | Date | string
+  telegramQueue?: Prisma.XOR<Prisma.TelegramQueueNullableScalarRelationFilter, Prisma.TelegramQueueWhereInput> | null
 }, "id" | "url" | "source_sourceProjectId">
 
 export type JobPostOrderByWithAggregationInput = {
@@ -470,6 +473,7 @@ export type JobPostCreateInput = {
   sentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramQueue?: Prisma.TelegramQueueCreateNestedOneWithoutJobPostInput
 }
 
 export type JobPostUncheckedCreateInput = {
@@ -493,6 +497,7 @@ export type JobPostUncheckedCreateInput = {
   sentAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  telegramQueue?: Prisma.TelegramQueueUncheckedCreateNestedOneWithoutJobPostInput
 }
 
 export type JobPostUpdateInput = {
@@ -515,6 +520,7 @@ export type JobPostUpdateInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramQueue?: Prisma.TelegramQueueUpdateOneWithoutJobPostNestedInput
 }
 
 export type JobPostUncheckedUpdateInput = {
@@ -538,6 +544,7 @@ export type JobPostUncheckedUpdateInput = {
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  telegramQueue?: Prisma.TelegramQueueUncheckedUpdateOneWithoutJobPostNestedInput
 }
 
 export type JobPostCreateManyInput = {
@@ -694,6 +701,11 @@ export type JobPostSumOrderByAggregateInput = {
   budgetMax?: Prisma.SortOrder
 }
 
+export type JobPostScalarRelationFilter = {
+  is?: Prisma.JobPostWhereInput
+  isNot?: Prisma.JobPostWhereInput
+}
+
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
@@ -726,6 +738,126 @@ export type IntFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type JobPostCreateNestedOneWithoutTelegramQueueInput = {
+  create?: Prisma.XOR<Prisma.JobPostCreateWithoutTelegramQueueInput, Prisma.JobPostUncheckedCreateWithoutTelegramQueueInput>
+  connectOrCreate?: Prisma.JobPostCreateOrConnectWithoutTelegramQueueInput
+  connect?: Prisma.JobPostWhereUniqueInput
+}
+
+export type JobPostUpdateOneRequiredWithoutTelegramQueueNestedInput = {
+  create?: Prisma.XOR<Prisma.JobPostCreateWithoutTelegramQueueInput, Prisma.JobPostUncheckedCreateWithoutTelegramQueueInput>
+  connectOrCreate?: Prisma.JobPostCreateOrConnectWithoutTelegramQueueInput
+  upsert?: Prisma.JobPostUpsertWithoutTelegramQueueInput
+  connect?: Prisma.JobPostWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.JobPostUpdateToOneWithWhereWithoutTelegramQueueInput, Prisma.JobPostUpdateWithoutTelegramQueueInput>, Prisma.JobPostUncheckedUpdateWithoutTelegramQueueInput>
+}
+
+export type JobPostCreateWithoutTelegramQueueInput = {
+  source: string
+  sourceProjectId: string
+  title: string
+  url: string
+  description?: string | null
+  rawText?: string | null
+  category?: string | null
+  status?: string | null
+  publishedAt?: Date | string | null
+  budgetMin?: number | null
+  budgetMax?: number | null
+  budgetText?: string | null
+  durationText?: string | null
+  skills?: string | null
+  lastSeenAt?: Date | string | null
+  contentHash?: string | null
+  sentAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type JobPostUncheckedCreateWithoutTelegramQueueInput = {
+  id?: number
+  source: string
+  sourceProjectId: string
+  title: string
+  url: string
+  description?: string | null
+  rawText?: string | null
+  category?: string | null
+  status?: string | null
+  publishedAt?: Date | string | null
+  budgetMin?: number | null
+  budgetMax?: number | null
+  budgetText?: string | null
+  durationText?: string | null
+  skills?: string | null
+  lastSeenAt?: Date | string | null
+  contentHash?: string | null
+  sentAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type JobPostCreateOrConnectWithoutTelegramQueueInput = {
+  where: Prisma.JobPostWhereUniqueInput
+  create: Prisma.XOR<Prisma.JobPostCreateWithoutTelegramQueueInput, Prisma.JobPostUncheckedCreateWithoutTelegramQueueInput>
+}
+
+export type JobPostUpsertWithoutTelegramQueueInput = {
+  update: Prisma.XOR<Prisma.JobPostUpdateWithoutTelegramQueueInput, Prisma.JobPostUncheckedUpdateWithoutTelegramQueueInput>
+  create: Prisma.XOR<Prisma.JobPostCreateWithoutTelegramQueueInput, Prisma.JobPostUncheckedCreateWithoutTelegramQueueInput>
+  where?: Prisma.JobPostWhereInput
+}
+
+export type JobPostUpdateToOneWithWhereWithoutTelegramQueueInput = {
+  where?: Prisma.JobPostWhereInput
+  data: Prisma.XOR<Prisma.JobPostUpdateWithoutTelegramQueueInput, Prisma.JobPostUncheckedUpdateWithoutTelegramQueueInput>
+}
+
+export type JobPostUpdateWithoutTelegramQueueInput = {
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceProjectId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  url?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rawText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  budgetMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  budgetMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  budgetText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  durationText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type JobPostUncheckedUpdateWithoutTelegramQueueInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceProjectId?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  url?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rawText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  budgetMin?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  budgetMax?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  budgetText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  durationText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  contentHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 
 
 export type JobPostSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -749,6 +881,7 @@ export type JobPostSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   sentAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  telegramQueue?: boolean | Prisma.JobPost$telegramQueueArgs<ExtArgs>
 }, ExtArgs["result"]["jobPost"]>
 
 export type JobPostSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -821,10 +954,17 @@ export type JobPostSelectScalar = {
 }
 
 export type JobPostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "source" | "sourceProjectId" | "title" | "url" | "description" | "rawText" | "category" | "status" | "publishedAt" | "budgetMin" | "budgetMax" | "budgetText" | "durationText" | "skills" | "lastSeenAt" | "contentHash" | "sentAt" | "createdAt" | "updatedAt", ExtArgs["result"]["jobPost"]>
+export type JobPostInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  telegramQueue?: boolean | Prisma.JobPost$telegramQueueArgs<ExtArgs>
+}
+export type JobPostIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type JobPostIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $JobPostPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "JobPost"
-  objects: {}
+  objects: {
+    telegramQueue: Prisma.$TelegramQueuePayload<ExtArgs> | null
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     source: string
@@ -1240,6 +1380,7 @@ readonly fields: JobPostFieldRefs;
  */
 export interface Prisma__JobPostClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  telegramQueue<T extends Prisma.JobPost$telegramQueueArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.JobPost$telegramQueueArgs<ExtArgs>>): Prisma.Prisma__TelegramQueueClient<runtime.Types.Result.GetResult<Prisma.$TelegramQueuePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1306,6 +1447,10 @@ export type JobPostFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Inter
    */
   omit?: Prisma.JobPostOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobPostInclude<ExtArgs> | null
+  /**
    * Filter, which JobPost to fetch.
    */
   where: Prisma.JobPostWhereUniqueInput
@@ -1324,6 +1469,10 @@ export type JobPostFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extension
    */
   omit?: Prisma.JobPostOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobPostInclude<ExtArgs> | null
+  /**
    * Filter, which JobPost to fetch.
    */
   where: Prisma.JobPostWhereUniqueInput
@@ -1341,6 +1490,10 @@ export type JobPostFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Omit specific fields from the JobPost
    */
   omit?: Prisma.JobPostOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobPostInclude<ExtArgs> | null
   /**
    * Filter, which JobPost to fetch.
    */
@@ -1390,6 +1543,10 @@ export type JobPostFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extensions
    */
   omit?: Prisma.JobPostOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobPostInclude<ExtArgs> | null
+  /**
    * Filter, which JobPost to fetch.
    */
   where?: Prisma.JobPostWhereInput
@@ -1437,6 +1594,10 @@ export type JobPostFindManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the JobPost
    */
   omit?: Prisma.JobPostOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobPostInclude<ExtArgs> | null
   /**
    * Filter, which JobPosts to fetch.
    */
@@ -1486,6 +1647,10 @@ export type JobPostCreateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    */
   omit?: Prisma.JobPostOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobPostInclude<ExtArgs> | null
+  /**
    * The data needed to create a JobPost.
    */
   data: Prisma.XOR<Prisma.JobPostCreateInput, Prisma.JobPostUncheckedCreateInput>
@@ -1531,6 +1696,10 @@ export type JobPostUpdateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    * Omit specific fields from the JobPost
    */
   omit?: Prisma.JobPostOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobPostInclude<ExtArgs> | null
   /**
    * The data needed to update a JobPost.
    */
@@ -1598,6 +1767,10 @@ export type JobPostUpsertArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    */
   omit?: Prisma.JobPostOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobPostInclude<ExtArgs> | null
+  /**
    * The filter to search for the JobPost to update in case it exists.
    */
   where: Prisma.JobPostWhereUniqueInput
@@ -1624,6 +1797,10 @@ export type JobPostDeleteArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    */
   omit?: Prisma.JobPostOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobPostInclude<ExtArgs> | null
+  /**
    * Filter which JobPost to delete.
    */
   where: Prisma.JobPostWhereUniqueInput
@@ -1644,6 +1821,25 @@ export type JobPostDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
 }
 
 /**
+ * JobPost.telegramQueue
+ */
+export type JobPost$telegramQueueArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TelegramQueue
+   */
+  select?: Prisma.TelegramQueueSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TelegramQueue
+   */
+  omit?: Prisma.TelegramQueueOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TelegramQueueInclude<ExtArgs> | null
+  where?: Prisma.TelegramQueueWhereInput
+}
+
+/**
  * JobPost without action
  */
 export type JobPostDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1655,4 +1851,8 @@ export type JobPostDefaultArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the JobPost
    */
   omit?: Prisma.JobPostOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.JobPostInclude<ExtArgs> | null
 }

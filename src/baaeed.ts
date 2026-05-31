@@ -1,5 +1,5 @@
 import type { SourceConfig, JobPostInput } from './index.js'
-import { buildListingHash, buildDetailHash, buildContentHash, fetchHtml, sleep, logEvent } from './index.js'
+import { buildListingHash, buildDetailHash, buildContentHash, fetchHtml, sleep, logEvent, getEnvInt } from './index.js'
 import { prisma } from './db.js'
 import * as cheerio from 'cheerio'
 
@@ -51,8 +51,10 @@ export async function scrapeBaaeedSource(source: SourceConfig): Promise<JobPostI
 
   const jobs: JobPostInput[] = [];
 
+  const requestDelayMs = getEnvInt('BAAEED_REQUEST_DELAY_MS', 2000)
+
   for (const item of newListings) {
-    await sleep(500); // polite delay
+    await sleep(requestDelayMs)
     try {
       const detailHtml = await fetchHtml(item.url);
       const detail$ = cheerio.load(detailHtml);
@@ -93,7 +95,6 @@ export async function scrapeBaaeedSource(source: SourceConfig): Promise<JobPostI
         url: item.url,
         description: cleanDesc,
         rawText: cleanDesc,
-        category: 'Software Development',
         publishedAt: new Date(), // Baaeed relative dates can be defaulted to now
         skills,
         detailStatus: 'full'

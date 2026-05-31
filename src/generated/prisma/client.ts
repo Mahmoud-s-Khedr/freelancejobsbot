@@ -46,3 +46,8 @@ export { Prisma }
  * 
  */
 export type JobPost = Prisma.JobPostModel
+/**
+ * Model TelegramQueue
+ * 
+ */
+export type TelegramQueue = Prisma.TelegramQueueModel

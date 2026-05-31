@@ -102,3 +102,80 @@ test('fetchHtmlWithRetry retries timeout errors and then succeeds', async () => 
     globalThis.fetch = originalFetch
   }
 })
+
+test('fetchHtmlWithRetry manually follows redirects and propagates cookies', async () => {
+  const originalFetch = globalThis.fetch
+  const calls: string[] = []
+  
+  globalThis.fetch = (async (urlInput: RequestInfo | URL, init?: RequestInit) => {
+    const url = String(urlInput)
+    calls.push(url)
+    const cookies = init?.headers ? (init.headers as Record<string, string>)['Cookie'] : undefined
+    
+    if (url === 'https://example.com/start') {
+      const headers = new Headers()
+      headers.append('Location', '/redirect')
+      headers.append('Set-Cookie', 'session=123; Path=/')
+      headers.append('Set-Cookie', 'lang=en; Path=/')
+      return new Response('', { status: 302, headers })
+    }
+    
+    if (url === 'https://example.com/redirect') {
+      if (cookies?.includes('session=123') && cookies?.includes('lang=en')) {
+        return makeResponse(200, '<html>redirect ok</html>')
+      }
+      const headers = new Headers()
+      headers.append('Location', '/start')
+      return new Response('', { status: 302, headers })
+    }
+    
+    return makeResponse(404, 'not found')
+  }) as typeof fetch
+
+  try {
+    const html = await fetchHtmlWithRetry(
+      'https://example.com/start',
+      async () => {},
+      { maxAttempts: 1, baseDelayMs: 1, maxDelayMs: 2, timeoutMs: 1000 }
+    )
+    assert.equal(html, '<html>redirect ok</html>')
+    assert.deepEqual(calls, [
+      'https://example.com/start',
+      'https://example.com/redirect'
+    ])
+  } finally {
+    globalThis.fetch = originalFetch
+  }
+})
+
+test('fetchHtmlWithRetry detects and stops redirect loops', async () => {
+  const originalFetch = globalThis.fetch
+  let calls = 0
+  
+  globalThis.fetch = (async () => {
+    calls++
+    const headers = new Headers()
+    headers.append('Location', '/loop')
+    return new Response('', { status: 302, headers })
+  }) as typeof fetch
+
+  try {
+    await assert.rejects(
+      fetchHtmlWithRetry('https://example.com/loop', async () => {}, {
+        maxAttempts: 1,
+        baseDelayMs: 1,
+        maxDelayMs: 2,
+        timeoutMs: 1000
+      }),
+      (error: unknown) => {
+        assert.ok(error instanceof FetchHtmlError)
+        assert.ok(String(error).includes('Redirect loop detected or max redirects exceeded'))
+        return true
+      }
+    )
+    assert.equal(calls, 11)
+  } finally {
+    globalThis.fetch = originalFetch
+  }
+})
+

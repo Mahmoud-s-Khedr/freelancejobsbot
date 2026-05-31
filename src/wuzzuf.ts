@@ -135,7 +135,6 @@ export async function scrapeWuzzufSource(source: SourceConfig): Promise<JobPostI
         url: item.url,
         description: cleanDesc,
         rawText: cleanDesc,
-        category: 'Software Development',
         publishedAt: new Date(),
         skills,
         detailStatus: 'full'

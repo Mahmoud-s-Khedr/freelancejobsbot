@@ -99,7 +99,6 @@ export async function scrapeNafezlySource(source: SourceConfig): Promise<JobPost
         url: item.url,
         description: cleanDesc,
         rawText: cleanDesc,
-        category: 'Software Development',
         publishedAt: new Date(),
         skills,
         detailStatus: 'full'

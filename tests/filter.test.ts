@@ -151,3 +151,23 @@ test('isTechJob supports additional keywords via environment variables', () => {
     else process.env.ADDITIONAL_TECH_KEYWORDS_AR = originalAr
   }
 })
+
+test('isTechJob returns false for non-tech jobs from Forasna and Tanqeeb now that category is undefined', () => {
+  assert.equal(isTechJob({
+    source: 'forasna',
+    title: 'مطلوب باريستا لمطعم',
+    description: 'خبرة في تحضير القهوة والمشروبات الساخنة والباردة.'
+  }), false)
+
+  assert.equal(isTechJob({
+    source: 'tanqeeb',
+    title: 'محاسب حديث التخرج',
+    description: 'إدخال البيانات المالية ومراجعة الحسابات.'
+  }), false)
+
+  assert.equal(isTechJob({
+    source: 'wuzzuf',
+    title: 'Truck driver needed',
+    description: 'Deliver goods to various locations.'
+  }), false)
+})

@@ -72,13 +72,62 @@ export async function fetchHtmlWithRetry(
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort(), timeoutMs)
     try {
-      const res = await fetch(url, {
-        signal: controller.signal,
-        headers: {
+      let currentUrl = url
+      const cookieJar = new Map<string, string>()
+      let redirectCount = 0
+      const maxRedirects = 10
+      let res: Response | null = null
+
+      while (true) {
+        const headers: Record<string, string> = {
           'User-Agent': 'Mozilla/5.0 ArabFreelanceJobsBot/2.0',
           'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
         }
-      })
+
+        if (cookieJar.size > 0) {
+          headers['Cookie'] = Array.from(cookieJar.entries())
+            .map(([k, v]) => `${k}=${v}`)
+            .join('; ')
+        }
+
+        res = await fetch(currentUrl, {
+          signal: controller.signal,
+          redirect: 'manual',
+          headers
+        })
+
+        const setCookies = res.headers.getSetCookie()
+        if (setCookies && setCookies.length > 0) {
+          for (const header of setCookies) {
+            const parts = header.split(';')
+            const firstPart = parts[0]?.trim()
+            if (firstPart) {
+              const eqIdx = firstPart.indexOf('=')
+              if (eqIdx !== -1) {
+                const key = firstPart.slice(0, eqIdx).trim()
+                const val = firstPart.slice(eqIdx + 1).trim()
+                if (key) {
+                  cookieJar.set(key, val)
+                }
+              }
+            }
+          }
+        }
+
+        if (res.status >= 300 && res.status < 400) {
+          const location = res.headers.get('location')
+          if (location) {
+            if (redirectCount >= maxRedirects) {
+              throw new FetchHtmlError(`Fetch failed for ${url}: Redirect loop detected or max redirects exceeded`, url, res.status)
+            }
+            currentUrl = new URL(location, currentUrl).href
+            redirectCount += 1
+            continue
+          }
+        }
+
+        break
+      }
 
       if (res.ok) return res.text()
 

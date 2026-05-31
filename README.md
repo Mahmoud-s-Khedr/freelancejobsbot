@@ -41,3 +41,15 @@ The bot is optimized to target **Software, Development, and Technology** jobs. T
 - `ADDITIONAL_TECH_KEYWORDS_EN`: Comma-separated additional English keywords to filter on (e.g., `rust,golang,solidity`).
 - `ADDITIONAL_TECH_KEYWORDS_AR`: Comma-separated additional Arabic keywords to filter on.
 
+
+
+------
+
+# 1. Install all dependencies
+pnpm install
+
+# 2. Generate the Prisma database client
+pnpm run db:generate
+
+# 3. Apply database schema migrations to create/sync your SQLite dev.db
+pnpm run db:migrate

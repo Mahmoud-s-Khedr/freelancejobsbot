@@ -13,14 +13,13 @@ import { scrapeNafezlySource } from './nafezly.js'
 import { scrapeBahrSource } from './bahr.js'
 import { scrapeForasnaSource } from './forasna.js'
 import { scrapeTanqeebSource } from './tanqeeb.js'
-import { scrapeBaytSource } from './bayt.js'
 import { scrapeWuzzufSource } from './wuzzuf.js'
-import { scrapeGoogleJobsSource } from './google_jobs.js'
 import { formatTelegramMessage } from './format.js'
 import { FetchHtmlError, fetchHtmlWithRetry } from './http.js'
 import { isTechJob } from './filter.js'
+import { cleanText } from './utils.js'
 
-export type SourceName = 'mostaql' | 'khamsat' | 'ureed' | 'baaeed' | 'nafezly' | 'bahr' | 'forasna' | 'tanqeeb' | 'bayt' | 'wuzzuf' | 'google_jobs'
+export type SourceName = 'mostaql' | 'khamsat' | 'ureed' | 'baaeed' | 'nafezly' | 'bahr' | 'forasna' | 'tanqeeb' | 'wuzzuf'
 
 export type SourceConfig = {
   name: SourceName
@@ -33,20 +32,20 @@ export type JobPostInput = {
   sourceProjectId: string
   title: string
   url: string
-  description?: string
-  rawText?: string
-  category?: string
-  status?: string
-  publishedAt?: Date
-  budgetMin?: number
-  budgetMax?: number
-  budgetText?: string
-  durationText?: string
-  skills?: string[]
-  detailStatus?: 'full' | 'fallback'
-  listingHash?: string
-  detailHash?: string
-  contentHash?: string
+  description?: string | null
+  rawText?: string | null
+  category?: string | null
+  status?: string | null
+  publishedAt?: Date | null
+  budgetMin?: number | null
+  budgetMax?: number | null
+  budgetText?: string | null
+  durationText?: string | null
+  skills?: string[] | null
+  detailStatus?: 'full' | 'fallback' | null
+  listingHash?: string | null
+  detailHash?: string | null
+  contentHash?: string | null
 }
 
 type SourceHealthState = {
@@ -56,7 +55,7 @@ type SourceHealthState = {
   lastFailureReason?: string
 }
 
-const SOURCES: SourceConfig[] = [
+export const SOURCES: SourceConfig[] = [
   {
     name: 'mostaql',
     url: process.env.MOSTAQL_SCRAPE_URL || 'https://mostaql.com/projects?category=development,ai-machine-learning&sort=latest',
@@ -98,19 +97,9 @@ const SOURCES: SourceConfig[] = [
     baseUrl: 'https://egypt.tanqeeb.com'
   },
   {
-    name: 'bayt',
-    url: process.env.BAYT_SCRAPE_URL || 'https://www.bayt.com/ar/international/jobs/',
-    baseUrl: 'https://www.bayt.com'
-  },
-  {
     name: 'wuzzuf',
     url: process.env.WUZZUF_SCRAPE_URL || 'https://wuzzuf.net/search/jobs?q=&a=hpb',
     baseUrl: 'https://wuzzuf.net'
-  },
-  {
-    name: 'google_jobs',
-    url: process.env.GOOGLE_JOBS_QUERY || 'software developer remote',
-    baseUrl: 'https://google.com'
   }
 ]
 
@@ -123,9 +112,7 @@ const sourceHealth: Record<SourceName, SourceHealthState> = {
   bahr: { consecutiveFailures: 0 },
   forasna: { consecutiveFailures: 0 },
   tanqeeb: { consecutiveFailures: 0 },
-  bayt: { consecutiveFailures: 0 },
-  wuzzuf: { consecutiveFailures: 0 },
-  google_jobs: { consecutiveFailures: 0 }
+  wuzzuf: { consecutiveFailures: 0 }
 }
 
 let skippedDueToRunning = 0
@@ -150,10 +137,6 @@ function requireEnv(name: string): string {
   const value = process.env[name]
   if (!value) throw new Error(`Missing environment variable: ${name}`)
   return value
-}
-
-function cleanText(value: string): string {
-  return value.replace(/\s+/g, ' ').trim()
 }
 
 
@@ -193,9 +176,7 @@ function looksLikeJobUrl(source: SourceName, url: string): boolean {
   if (source === 'bahr') return parsed.hostname.includes('bahr.sa')
   if (source === 'forasna') return parsed.hostname.includes('forasna.com')
   if (source === 'tanqeeb') return parsed.hostname.includes('tanqeeb.com')
-  if (source === 'bayt') return parsed.hostname.includes('bayt.com')
   if (source === 'wuzzuf') return parsed.hostname.includes('wuzzuf.net')
-  if (source === 'google_jobs') return parsed.hostname.includes('google.com') || parsed.hostname.includes('google.com.eg')
 
   return false
 }
@@ -500,7 +481,7 @@ async function scrapeMostaqlSource(source: SourceConfig): Promise<JobPostInput[]
   return jobs
 }
 
-async function scrapeSource(source: SourceConfig): Promise<JobPostInput[]> {
+export async function scrapeSource(source: SourceConfig): Promise<JobPostInput[]> {
   if (source.name === 'mostaql') return scrapeMostaqlSource(source)
   if (source.name === 'khamsat') return scrapeKhamsatSource(source)
   if (source.name === 'ureed') return scrapeUreedSource(source)
@@ -509,9 +490,7 @@ async function scrapeSource(source: SourceConfig): Promise<JobPostInput[]> {
   if (source.name === 'bahr') return scrapeBahrSource(source)
   if (source.name === 'forasna') return scrapeForasnaSource(source)
   if (source.name === 'tanqeeb') return scrapeTanqeebSource(source)
-  if (source.name === 'bayt') return scrapeBaytSource(source)
   if (source.name === 'wuzzuf') return scrapeWuzzufSource(source)
-  if (source.name === 'google_jobs') return scrapeGoogleJobsSource(source)
   throw new Error(`Unknown source: ${source.name}`)
 }
 
@@ -535,7 +514,7 @@ async function validateDatabaseConnection(): Promise<void> {
 async function sendTelegramMessage(text: string): Promise<void> {
   const token = requireEnv('TELEGRAM_BOT_TOKEN')
   const chatId = requireEnv('TELEGRAM_CHAT_ID')
-  const minDelay = getEnvInt('TELEGRAM_MIN_DELAY_MS', 2000)
+  const minDelay = getEnvInt('TELEGRAM_MIN_DELAY_MS', 3100)
   const maxAttempts = getEnvInt('TELEGRAM_MAX_ATTEMPTS', 5)
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -558,21 +537,24 @@ async function sendTelegramMessage(text: string): Promise<void> {
 
     const body = await res.text()
 
-    if (res.status === 429) {
-      let retryAfter = 30
-      try {
-        const parsed = JSON.parse(body)
-        if (typeof parsed.parameters?.retry_after === 'number') {
-          retryAfter = parsed.parameters.retry_after
+    if (res.status === 429 || res.status >= 500) {
+      let retryAfter = res.status === 429 ? 30 : 10
+      if (res.status === 429) {
+        try {
+          const parsed = JSON.parse(body)
+          if (typeof parsed.parameters?.retry_after === 'number') {
+            retryAfter = parsed.parameters.retry_after
+          }
+        } catch {
+          // Ignore JSON parsing errors
         }
-      } catch {
-        // Ignore JSON parsing errors
       }
 
-      logEvent('warn', 'telegram_rate_limited', {
+      logEvent('warn', res.status === 429 ? 'telegram_rate_limited' : 'telegram_server_error', {
         attempt,
+        status: res.status,
         retryAfterSec: retryAfter,
-        description: `Telegram 429 rate limit hit. Retrying in ${retryAfter}s.`
+        description: `Telegram ${res.status} error. Retrying in ${retryAfter}s.`
       })
 
       await sleep((retryAfter * 1000) + 1000)
@@ -633,14 +615,15 @@ async function saveAndNotify(job: JobPostInput): Promise<'created' | 'updated' |
     if (!existing && saved) {
       try {
         if (isTechJob(job)) {
-          await sendTelegramMessage(formatTelegramMessage(job))
-          await prisma.jobPost.update({ where: { id: saved.id }, data: { sentAt: new Date() } })
-          logEvent('info', 'job_saved_and_sent', { source: job.source, sourceProjectId: job.sourceProjectId, title: job.title })
+          await prisma.telegramQueue.create({
+            data: { jobPostId: saved.id }
+          })
+          logEvent('info', 'job_saved_and_queued', { source: job.source, sourceProjectId: job.sourceProjectId, title: job.title })
         } else {
           logEvent('info', 'job_saved_filtered', { source: job.source, sourceProjectId: job.sourceProjectId, title: job.title })
         }
       } catch (error) {
-        logEvent('error', 'notify_failed', {
+        logEvent('error', 'queue_failed', {
           source: job.source,
           sourceProjectId: job.sourceProjectId,
           jobId: saved.id,
@@ -684,10 +667,28 @@ async function saveAndNotify(job: JobPostInput): Promise<'created' | 'updated' |
     data.skills = job.skills ? JSON.stringify(job.skills) : null
   }
 
-  await prisma.jobPost.update({
-    where: { id: existing.id },
-    data
-  })
+  try {
+    await prisma.jobPost.update({
+      where: { id: existing.id },
+      data
+    })
+  } catch (updateError) {
+    if (
+      updateError instanceof Prisma.PrismaClientKnownRequestError &&
+      updateError.code === 'P2002'
+    ) {
+      // The new url collides with another record — update all fields except url
+      const { url: _url, ...dataWithoutUrl } = data
+      await prisma.jobPost.update({ where: { id: existing.id }, data: dataWithoutUrl })
+      logEvent('warn', 'job_update_url_conflict_skipped', {
+        source: job.source,
+        sourceProjectId: job.sourceProjectId,
+        existingId: existing.id
+      })
+    } else {
+      throw updateError
+    }
+  }
 
   if (changed) {
     logEvent('info', 'job_updated', {
@@ -768,14 +769,14 @@ async function runOnce(): Promise<void> {
   }
 
   const runDurationMs = Date.now() - runStart
-  const maxRunDurationMs = getEnvInt('MAX_RUN_DURATION_MS', 60000)
+  const maxRunDurationMs = getEnvInt('MAX_RUN_DURATION_MS', 300000)
   if (runDurationMs > maxRunDurationMs) {
     consecutiveSlowRuns += 1
     logEvent('warn', 'run_slow', { runDurationMs, maxRunDurationMs, consecutiveSlowRuns })
   } else {
     consecutiveSlowRuns = 0
   }
-  const cronIntervalMs = parseCronIntervalMs(process.env.CRON_EXPR || '*/3 * * * *')
+  const cronIntervalMs = parseCronIntervalMs(process.env.CRON_EXPR || '*/5 * * * *')
   if (cronIntervalMs !== null && runDurationMs > cronIntervalMs) {
     logEvent('warn', 'run_exceeds_cron_interval', {
       runDurationMs,
@@ -794,10 +795,103 @@ async function runOnce(): Promise<void> {
   logEvent('info', 'run_finished', { runDurationMs })
 }
 
+async function startTelegramQueueProcessor(): Promise<void> {
+  const maxAttempts = getEnvInt('TELEGRAM_MAX_ATTEMPTS', 5)
+  logEvent('info', 'telegram_queue_processor_started')
+
+  while (true) {
+    try {
+      const nextItem = await prisma.telegramQueue.findFirst({
+        where: { failedAt: null },
+        orderBy: { id: 'asc' },
+        include: { jobPost: true }
+      })
+
+      if (!nextItem) {
+        await sleep(10000)
+        continue
+      }
+
+      const job = nextItem.jobPost
+
+      if (nextItem.attempts >= maxAttempts) {
+        logEvent('error', 'telegram_queue_max_attempts_reached', {
+          queueId: nextItem.id,
+          jobPostId: job.id,
+          attempts: nextItem.attempts,
+          title: job.title
+        })
+        await prisma.telegramQueue.update({
+          where: { id: nextItem.id },
+          data: { failedAt: new Date() }
+        })
+        continue
+      }
+
+      await prisma.telegramQueue.update({
+        where: { id: nextItem.id },
+        data: { attempts: { increment: 1 } }
+      })
+
+      const jobInput: JobPostInput = {
+        source: job.source as SourceName,
+        sourceProjectId: job.sourceProjectId,
+        title: job.title,
+        url: job.url,
+        description: job.description,
+        rawText: job.rawText,
+        category: job.category,
+        status: job.status,
+        publishedAt: job.publishedAt,
+        budgetMin: job.budgetMin,
+        budgetMax: job.budgetMax,
+        budgetText: job.budgetText,
+        durationText: job.durationText,
+        skills: job.skills ? JSON.parse(job.skills) : null
+      }
+
+      const messageText = formatTelegramMessage(jobInput)
+
+      logEvent('info', 'telegram_queue_sending', {
+        queueId: nextItem.id,
+        jobId: job.id,
+        source: job.source,
+        title: job.title
+      })
+
+      await sendTelegramMessage(messageText)
+
+      await prisma.jobPost.update({
+        where: { id: job.id },
+        data: { sentAt: new Date() }
+      })
+
+      await prisma.telegramQueue.delete({
+        where: { id: nextItem.id }
+      })
+
+      logEvent('info', 'telegram_queue_sent', {
+        queueId: nextItem.id,
+        jobId: job.id
+      })
+
+      const minDelay = getEnvInt('TELEGRAM_MIN_DELAY_MS', 3100)
+      await sleep(minDelay)
+
+    } catch (error) {
+      logEvent('error', 'telegram_queue_error', {
+        error: String(error)
+      })
+      await sleep(10000)
+    }
+  }
+}
+
 async function main(): Promise<void> {
   validateStartupConfig()
   await validateDatabaseConnection()
-  const cronExpr = process.env.CRON_EXPR || '*/3 * * * *'
+  void startTelegramQueueProcessor()
+  const cronExpr = process.env.CRON_EXPR || '*/5 * * * *'
   const heartbeatIntervalMs = getEnvInt('HEARTBEAT_INTERVAL_MS', 15000)
   const heartbeatStallWarnMs = getEnvInt('HEARTBEAT_STALL_WARN_MS', 10000)
   const loopLag = monitorEventLoopDelay({ resolution: 20 })
@@ -824,6 +918,9 @@ async function main(): Promise<void> {
     }
     lastHeartbeat = now
   }, heartbeatIntervalMs)
+
+  // Reset hourly so the counter reflects skips in the last hour, not process lifetime
+  setInterval(() => { skippedDueToRunning = 0 }, 3_600_000)
 
   await runOnce()
 
