@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { fetchHtmlWithRetry, FetchHtmlError } from '../src/http.js'
+import { fetchHtmlWithRetry, FetchHtmlError, fetchJsonWithRetry } from '../src/http.js'
 
 function makeResponse(status: number, body: string, headers: Record<string, string> = {}): Response {
   return new Response(body, { status, headers })
@@ -179,3 +179,25 @@ test('fetchHtmlWithRetry detects and stops redirect loops', async () => {
   }
 })
 
+test('fetchJsonWithRetry retries on 5xx and then returns parsed JSON', async () => {
+  const originalFetch = globalThis.fetch
+  let calls = 0
+  globalThis.fetch = (async () => {
+    calls += 1
+    if (calls === 1) return makeResponse(503, 'unavailable')
+    return makeResponse(200, JSON.stringify({ ok: true }), { 'content-type': 'application/json' })
+  }) as typeof fetch
+
+  try {
+    const data = await fetchJsonWithRetry<{ ok: boolean }>(
+      'https://example.com/graphql',
+      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' },
+      async () => {},
+      { maxAttempts: 2, baseDelayMs: 1, maxDelayMs: 2, timeoutMs: 1000 }
+    )
+    assert.equal(data.ok, true)
+    assert.equal(calls, 2)
+  } finally {
+    globalThis.fetch = originalFetch
+  }
+})

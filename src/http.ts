@@ -176,3 +176,74 @@ export async function fetchHtmlWithRetry(
   if (lastError instanceof FetchHtmlError) throw lastError
   throw new FetchHtmlError(`Fetch failed for ${url}: retry budget exhausted`, url)
 }
+
+export async function fetchJsonWithRetry<T>(
+  url: string,
+  init: RequestInit,
+  sleep: (ms: number) => Promise<void>,
+  options: FetchHtmlOptions = {},
+  onRetry?: (log: FetchAttemptLog) => void
+): Promise<T> {
+  const maxAttempts = options.maxAttempts ?? 3
+  const baseDelayMs = options.baseDelayMs ?? 500
+  const maxDelayMs = options.maxDelayMs ?? 8000
+  const timeoutMs = options.timeoutMs ?? 10_000
+
+  let lastError: unknown
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), timeoutMs)
+    try {
+      const res = await fetch(url, {
+        ...init,
+        signal: controller.signal
+      })
+
+      if (res.ok) return await res.json() as T
+
+      const status = res.status
+      const retriable = shouldRetryStatus(status) && attempt < maxAttempts
+      if (!retriable) {
+        throw new FetchHtmlError(`Fetch failed for ${url}: ${status}`, url, status)
+      }
+
+      const retryAfterMs = parseRetryAfterMs(res.headers.get('retry-after'))
+      const retryDelayMs = retryAfterMs ?? backoffDelayMs(attempt, baseDelayMs, maxDelayMs)
+      onRetry?.({
+        url,
+        status,
+        attempt,
+        maxAttempts,
+        retryDelayMs,
+        reason: status === 429 ? 'rate-limited' : 'upstream-server-error'
+      })
+      await sleep(retryDelayMs)
+      continue
+    } catch (error) {
+      lastError = error
+      const retriableError = isAbortError(error) || error instanceof TypeError
+      const canRetry = retriableError && attempt < maxAttempts
+      if (!canRetry) {
+        if (error instanceof FetchHtmlError) throw error
+        if (isAbortError(error)) throw new FetchHtmlError(`Fetch timeout for ${url}`, url)
+        throw new FetchHtmlError(`Fetch failed for ${url}: ${String(error)}`, url)
+      }
+
+      const retryDelayMs = backoffDelayMs(attempt, baseDelayMs, maxDelayMs)
+      onRetry?.({
+        url,
+        attempt,
+        maxAttempts,
+        retryDelayMs,
+        reason: isAbortError(error) ? 'timeout' : 'network-error'
+      })
+      await sleep(retryDelayMs)
+    } finally {
+      clearTimeout(timer)
+    }
+  }
+
+  if (lastError instanceof FetchHtmlError) throw lastError
+  throw new FetchHtmlError(`Fetch failed for ${url}: retry budget exhausted`, url)
+}

@@ -9,13 +9,12 @@ import { normalizeUrl, parseMostaqlListing, parseMostaqlProjectDetail } from './
 import { buildKhamsatPageUrl, parseKhamsatDetail, parseKhamsatListing } from './khamsat.js'
 import { scrapeUreedSource } from './ureed.js'
 import { scrapeNafezlySource } from './nafezly.js'
-import { scrapeBahrSource } from './bahr.js'
 import { formatTelegramMessage } from './format.js'
 import { FetchHtmlError, fetchHtmlWithRetry } from './http.js'
 import { isTechJob } from './filter.js'
 import { cleanText } from './utils.js'
 
-export type SourceName = 'mostaql' | 'khamsat' | 'ureed' | 'nafezly' | 'bahr'
+export type SourceName = 'mostaql' | 'khamsat' | 'ureed' | 'nafezly'
 
 export type SourceConfig = {
   name: SourceName
@@ -71,11 +70,6 @@ export const SOURCES: SourceConfig[] = [
     name: 'nafezly',
     url: process.env.NAFEZLY_SCRAPE_URL || 'https://nafezly.com/projects',
     baseUrl: 'https://nafezly.com'
-  },
-  {
-    name: 'bahr',
-    url: process.env.BAHR_SCRAPE_URL || 'https://bahr.sa/projects?sortBy=publishDate_DESC',
-    baseUrl: 'https://bahr.sa'
   }
 ]
 
@@ -83,8 +77,7 @@ const sourceHealth: Record<SourceName, SourceHealthState> = {
   mostaql: { consecutiveFailures: 0 },
   khamsat: { consecutiveFailures: 0 },
   ureed: { consecutiveFailures: 0 },
-  nafezly: { consecutiveFailures: 0 },
-  bahr: { consecutiveFailures: 0 }
+  nafezly: { consecutiveFailures: 0 }
 }
 
 let skippedDueToRunning = 0
@@ -144,8 +137,6 @@ function looksLikeJobUrl(source: SourceName, url: string): boolean {
 
   if (source === 'ureed') return parsed.hostname.includes('ureed.com')
   if (source === 'nafezly') return parsed.hostname.includes('nafezly.com')
-  if (source === 'bahr') return parsed.hostname.includes('bahr.sa')
-
   return false
 }
 
@@ -193,9 +184,21 @@ export function buildContentHash(job: JobPostInput): string {
   return sha1(JSON.stringify({ listingHash, detailHash }))
 }
 
-function isRetriableSourceError(error: unknown): boolean {
-  if (!(error instanceof FetchHtmlError)) return false
-  return error.status === undefined || error.status >= 500 || error.status === 429
+function extractErrorStatus(error: unknown): number | undefined {
+  if (error instanceof FetchHtmlError) return error.status
+  if (!(error instanceof Error)) return undefined
+  const match = error.message.match(/\bstatus\s+(\d{3})\b/i)
+  if (!match?.[1]) return undefined
+  const parsed = Number.parseInt(match[1], 10)
+  return Number.isFinite(parsed) ? parsed : undefined
+}
+
+export function isRetriableSourceError(error: unknown): boolean {
+  const status = extractErrorStatus(error)
+  if (status !== undefined) return status === 429 || status >= 500
+
+  if (!(error instanceof Error)) return false
+  return error.name === 'AbortError' || error instanceof TypeError
 }
 
 function getSourceCooldownMs(failureCount: number): number {
@@ -454,7 +457,6 @@ export async function scrapeSource(source: SourceConfig): Promise<JobPostInput[]
   if (source.name === 'khamsat') return scrapeKhamsatSource(source)
   if (source.name === 'ureed') return scrapeUreedSource(source)
   if (source.name === 'nafezly') return scrapeNafezlySource(source)
-  if (source.name === 'bahr') return scrapeBahrSource(source)
   throw new Error(`Unknown source: ${source.name}`)
 }
 
@@ -475,11 +477,12 @@ async function validateDatabaseConnection(): Promise<void> {
   }
 }
 
-async function sendTelegramMessage(text: string): Promise<void> {
+export async function sendTelegramMessage(text: string): Promise<void> {
   const token = requireEnv('TELEGRAM_BOT_TOKEN')
   const chatId = requireEnv('TELEGRAM_CHAT_ID')
   const minDelay = getEnvInt('TELEGRAM_MIN_DELAY_MS', 3100)
   const maxAttempts = getEnvInt('TELEGRAM_MAX_ATTEMPTS', 5)
+  const requestTimeoutMs = getEnvInt('TELEGRAM_REQUEST_TIMEOUT_MS', 15000)
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     const now = Date.now()
@@ -488,11 +491,33 @@ async function sendTelegramMessage(text: string): Promise<void> {
       await sleep(minDelay - timeSinceLastSend)
     }
 
-    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML', disable_web_page_preview: false })
-    })
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), requestTimeoutMs)
+    let res: Response
+    try {
+      res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML', disable_web_page_preview: false }),
+        signal: controller.signal
+      })
+    } catch (error) {
+      clearTimeout(timer)
+      const canRetry = (error instanceof TypeError || (error instanceof Error && error.name === 'AbortError')) && attempt < maxAttempts
+      if (!canRetry) {
+        throw new Error(`Telegram send failed: ${String(error)}`)
+      }
+      const retryDelayMs = Math.min(30000, 1000 * (2 ** (attempt - 1)))
+      logEvent('warn', 'telegram_network_error', {
+        attempt,
+        retryDelayMs,
+        error: String(error)
+      })
+      await sleep(retryDelayMs)
+      continue
+    } finally {
+      clearTimeout(timer)
+    }
 
     if (res.ok) {
       lastTelegramSendTime = Date.now()
@@ -759,17 +784,65 @@ async function runOnce(): Promise<void> {
   logEvent('info', 'run_finished', { runDurationMs })
 }
 
+type ClaimedQueueItem = {
+  id: number
+  attempts: number
+  jobPost: {
+    id: number
+    source: string
+    sourceProjectId: string
+    title: string
+    url: string
+    description: string | null
+    rawText: string | null
+    category: string | null
+    status: string | null
+    publishedAt: Date | null
+    budgetMin: number | null
+    budgetMax: number | null
+    budgetText: string | null
+    durationText: string | null
+    skills: string | null
+  }
+}
+
+export async function claimNextTelegramQueueItem(maxAttempts: number): Promise<ClaimedQueueItem | null> {
+  return prisma.$transaction(async tx => {
+    await tx.telegramQueue.updateMany({
+      where: { failedAt: null, attempts: { gte: maxAttempts } },
+      data: { failedAt: new Date() }
+    })
+
+    const candidate = await tx.telegramQueue.findFirst({
+      where: { failedAt: null, attempts: { lt: maxAttempts } },
+      orderBy: { id: 'asc' },
+      include: { jobPost: true }
+    })
+
+    if (!candidate) return null
+
+    const claimed = await tx.telegramQueue.updateMany({
+      where: {
+        id: candidate.id,
+        failedAt: null,
+        attempts: candidate.attempts
+      },
+      data: { attempts: { increment: 1 } }
+    })
+
+    if (claimed.count !== 1) return null
+
+    return candidate
+  })
+}
+
 async function startTelegramQueueProcessor(): Promise<void> {
   const maxAttempts = getEnvInt('TELEGRAM_MAX_ATTEMPTS', 5)
   logEvent('info', 'telegram_queue_processor_started')
 
   while (true) {
     try {
-      const nextItem = await prisma.telegramQueue.findFirst({
-        where: { failedAt: null },
-        orderBy: { id: 'asc' },
-        include: { jobPost: true }
-      })
+      const nextItem = await claimNextTelegramQueueItem(maxAttempts)
 
       if (!nextItem) {
         await sleep(10000)
@@ -777,25 +850,6 @@ async function startTelegramQueueProcessor(): Promise<void> {
       }
 
       const job = nextItem.jobPost
-
-      if (nextItem.attempts >= maxAttempts) {
-        logEvent('error', 'telegram_queue_max_attempts_reached', {
-          queueId: nextItem.id,
-          jobPostId: job.id,
-          attempts: nextItem.attempts,
-          title: job.title
-        })
-        await prisma.telegramQueue.update({
-          where: { id: nextItem.id },
-          data: { failedAt: new Date() }
-        })
-        continue
-      }
-
-      await prisma.telegramQueue.update({
-        where: { id: nextItem.id },
-        data: { attempts: { increment: 1 } }
-      })
 
       const jobInput: JobPostInput = {
         source: job.source as SourceName,
