@@ -3,3 +3,19 @@ node_modules
 dev.db
 scratch
 *.log
+
+# Local research inputs and generated reports
+/100_Companies_Remote_Jobs_Egyptian_Talent.md
+/100_Companies_for_Mahmoud_Khedr_Remote_Visa_Sponsored_Roles.md
+/120+ companies hiring remote engineers from Egypt.md
+/FREELANCE_JOB_SITES.md
+/REFERENCE_REPOSITORIES_REPORT.md
+/companies-list.md
+/egypt_offshoring_remote_companies_database_expanded(1).xlsx
+/remote_first_companies_egypt.xlsx
+/reports/
+
+# Temporary reference checkouts and Python caches
+/tmp/
+__pycache__/
+*.py[cod]

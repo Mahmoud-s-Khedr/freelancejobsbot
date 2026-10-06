@@ -1,0 +1,8 @@
+{
+  "greenhouse": {"jobs": [{"id": 101, "title": "Software Engineer", "absolute_url": "https://example.com/101", "location": {"name": "Cairo, Egypt"}, "updated_at": "2026-10-01T12:00:00Z", "content": "<p>Build services</p>"}]},
+  "ashby": {"jobs": [{"id": "a1", "title": "Accountant", "jobUrl": "https://example.com/a1", "applyUrl": "https://example.com/apply/a1", "isRemote": true, "publishedAt": "2026-10-01T12:00:00Z"}]},
+  "lever": [{"id": "l1", "text": "Backend Developer", "hostedUrl": "https://example.com/l1", "createdAt": 1790856000000, "categories": {"location": "Remote - US", "commitment": "Full-time"}}],
+  "himalayas": {"jobs": [{"guid": "h1", "title": "Engineer", "companyName": "Example", "applicationLink": "https://example.com/h1", "locationRestrictions": [{"name": "Egypt", "alpha2": "EG"}], "timezoneRestrictions": ["+02:00"], "currency": "EGP", "salaryPeriod": "monthly", "minSalary": 20000, "pubDate": 1790856000000}], "nextCursor": "opaque"},
+  "remotive": {"jobs": [{"id": 201, "title": "Developer", "url": "https://example.com/201", "company_name": "Example", "candidate_required_location": "Worldwide"}]},
+  "remoteok": [{"legal": "Synthetic test notice"}, {"id": "r1", "position": "Developer", "url": "https://example.com/r1", "company": "Example", "location": "Worldwide"}]
+}

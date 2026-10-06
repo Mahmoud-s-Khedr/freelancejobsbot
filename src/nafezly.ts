@@ -46,7 +46,7 @@ export async function scrapeNafezlySource(source: SourceConfig): Promise<JobPost
   });
 
   const existingIds = new Set(existingPosts.map(p => p.sourceProjectId));
-  const newListings = listings.filter(l => !existingIds.has(l.sourceProjectId));
+  const newListings = listings;
 
   logEvent('info', 'nafezly_new_listings', { count: newListings.length });
 
@@ -99,7 +99,7 @@ export async function scrapeNafezlySource(source: SourceConfig): Promise<JobPost
         url: item.url,
         description: cleanDesc,
         rawText: cleanDesc,
-        publishedAt: new Date(),
+
         skills,
         detailStatus: 'full'
       };
@@ -115,6 +115,7 @@ export async function scrapeNafezlySource(source: SourceConfig): Promise<JobPost
       jobs.push(job);
     } catch (err: any) {
       logEvent('error', 'nafezly_detail_error', { url: item.url, error: err.message });
+      jobs.push({source:'nafezly', ...item, detailStatus:'fallback'});
     }
   }
 

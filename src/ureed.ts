@@ -31,13 +31,16 @@ export async function scrapeUreedSource(source: SourceConfig): Promise<JobPostIn
   `;
 
   const url = source.url || 'https://graphql.ureed.com/graphql'
+  const jobs: JobPostInput[] = []
+  const seen = new Set<string>()
+  for (let page = 1; page <= 100; page++) {
   const body = JSON.stringify({
     query,
     variables: {
       filters: {
         categories: [],
-        page: 1,
-        size: 15,
+        page,
+        size: 50,
         text: ''
       }
     }
@@ -52,11 +55,16 @@ export async function scrapeUreedSource(source: SourceConfig): Promise<JobPostIn
     maxDelayMs: 8000,
     timeoutMs: 10000
   })
-  const projects = result?.data?.allProjects?.projects || []
+  if (result.errors?.length) throw new Error(`Ureed GraphQL errors: ${JSON.stringify(result.errors)}`)
+  const projects = result?.data?.allProjects?.projects
+  if (!Array.isArray(projects)) throw new Error('Malformed Ureed projects payload')
+  if (!projects.length) return jobs
 
-  const jobs: JobPostInput[] = []
   for (const proj of projects) {
+    if (!proj.id || !proj.name) throw new Error('Invalid Ureed job')
     const id = String(proj.id)
+    if (seen.has(id)) throw new Error('Repeated Ureed page')
+    seen.add(id)
     const projectUrl = `https://app.ureed.com/project/${id}`
     
     // Clean description HTML to plain text
@@ -85,11 +93,12 @@ export async function scrapeUreedSource(source: SourceConfig): Promise<JobPostIn
     }
 
     if (proj.publishedOn) {
-      job.publishedAt = new Date(proj.publishedOn)
+      const d = new Date(proj.publishedOn)
+      if (Number.isFinite(d.getTime())) job.publishedAt = d
     }
     if (budgetVal !== undefined) {
       job.budgetMin = budgetVal
-      job.budgetText = `$${budgetVal}`
+      job.budgetText = String(budgetVal)
     }
 
     job.listingHash = buildListingHash(job)
@@ -99,5 +108,8 @@ export async function scrapeUreedSource(source: SourceConfig): Promise<JobPostIn
     jobs.push(job)
   }
 
-  return jobs
+    if (projects.length < 50) return jobs
+    await sleep(1000)
+  }
+  throw new Error('Ureed pagination capped')
 }

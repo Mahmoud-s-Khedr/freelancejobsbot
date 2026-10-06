@@ -184,9 +184,9 @@ function getEnvFilters() {
   };
 }
 
-export function isTechJob(job: FilterJobInput): boolean {
+export function isTechJob(job: FilterJobInput, enforce = false): boolean {
   // 1. Check if filter is disabled
-  if (process.env.ENABLE_TECH_FILTER === 'false') {
+  if (!enforce && process.env.ENABLE_TECH_FILTER === 'false') {
     return true;
   }
 

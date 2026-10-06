@@ -53,7 +53,7 @@ type SourceHealthState = {
 export const SOURCES: SourceConfig[] = [
   {
     name: 'mostaql',
-    url: process.env.MOSTAQL_SCRAPE_URL || 'https://mostaql.com/projects?category=development,ai-machine-learning&sort=latest',
+    url: process.env.MOSTAQL_SCRAPE_URL || 'https://mostaql.com/projects?sort=latest',
     baseUrl: 'https://mostaql.com'
   },
   {
@@ -63,7 +63,7 @@ export const SOURCES: SourceConfig[] = [
   },
   {
     name: 'ureed',
-    url: process.env.UREED_SCRAPE_URL || 'https://app.ureed.com/find-projects?keyword=',
+    url: process.env.UREED_SCRAPE_URL || 'https://graphql.ureed.com/graphql',
     baseUrl: 'https://app.ureed.com'
   },
   {
@@ -262,7 +262,7 @@ async function scrapeKhamsatSource(source: SourceConfig): Promise<JobPostInput[]
 
     const existingRatio = existingCount / rows.length
     logEvent('info', 'khamsat_page', { page, rows: rows.length, existing: existingCount, ratio: Number(existingRatio.toFixed(2)) })
-    if (existingRatio >= knownThreshold) {
+    if (false && existingRatio >= knownThreshold) {
       logEvent('info', 'khamsat_stop', { reason: 'known-threshold', page })
       break
     }
@@ -287,7 +287,7 @@ async function scrapeKhamsatSource(source: SourceConfig): Promise<JobPostInput[]
       select: { sourceProjectId: true }
     })).map(row => row.sourceProjectId)
   )
-  const newListings = listings.filter(item => !existingIds.has(item.sourceProjectId))
+  const newListings = listings
 
   const jobs: JobPostInput[] = []
   for (let i = 0; i < newListings.length; i += detailConcurrency) {
@@ -377,7 +377,7 @@ async function scrapeMostaqlSource(source: SourceConfig): Promise<JobPostInput[]
 
     logEvent('info', 'mostaql_page', { page, rows: pageListings.length, existing: existingCount })
 
-    if (existingCount >= pageListings.length) {
+    if (false && existingCount >= pageListings.length) {
       logEvent('info', 'mostaql_stop', { reason: 'known-threshold', page })
       break
     }
@@ -562,7 +562,7 @@ async function saveAndNotify(job: JobPostInput): Promise<'created' | 'updated' |
   })
 
   if (!existing) {
-    existing = await prisma.jobPost.findUnique({ where: { url: job.url } })
+    existing = await prisma.jobPost.findFirst({ where: { url: job.url } })
   }
 
   if (!existing) {
@@ -590,7 +590,7 @@ async function saveAndNotify(job: JobPostInput): Promise<'created' | 'updated' |
       })
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-        const existingByUrl = await prisma.jobPost.findUnique({ where: { url: job.url } })
+        const existingByUrl = await prisma.jobPost.findFirst({ where: { url: job.url } })
         if (existingByUrl) {
           existing = existingByUrl
         } else {
@@ -980,7 +980,7 @@ const isMain = process.argv[1] && (
 )
 
 if (isMain) {
-  main().catch(async error => {
+  import('./collection/cli.js').then(({main})=>main(['schedule','--notify'])).catch(async error => {
     console.error('Fatal bot error:', error)
     await prisma.$disconnect()
     process.exit(1)

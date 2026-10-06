@@ -5,13 +5,16 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx src/index.ts",
+    "dev": "tsx src/collection/cli.ts schedule --notify",
     "test": "tsx --test tests/**/*.test.ts",
     "typecheck": "tsc --noEmit",
     "check": "pnpm run typecheck && prisma validate && prisma migrate status",
     "db:studio": "prisma studio",
     "db:migrate": "prisma migrate dev",
-    "db:generate": "prisma generate"
+    "db:generate": "prisma generate",
+    "collect": "tsx src/collection/cli.ts collect",
+    "sources:status": "tsx src/collection/cli.ts status",
+    "export": "tsx src/collection/cli.ts export"
   },
   "keywords": [],
   "author": "",

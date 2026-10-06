@@ -1,0 +1,16 @@
+[Unit]
+Description=Freelancebot job collection and personal Telegram alerts
+After=network-online.target freelancebot-logs.service
+Wants=network-online.target freelancebot-logs.service
+
+[Service]
+Type=simple
+WorkingDirectory=/absolute/path/to/freelancebot
+Environment=DATABASE_URL=file:/absolute/path/to/freelancebot/dev.db
+ExecStart=/absolute/path/to/node --import tsx src/collection/cli.ts schedule --notify
+Restart=on-failure
+RestartSec=30
+TimeoutStopSec=30
+
+[Install]
+WantedBy=default.target

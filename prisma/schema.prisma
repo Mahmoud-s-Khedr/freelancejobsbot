@@ -12,7 +12,7 @@ model JobPost {
   source      String
   sourceProjectId String
   title       String
-  url         String    @unique
+  url         String
   description String?
   rawText     String?
   category    String?
@@ -28,6 +28,22 @@ model JobPost {
   sentAt      DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  applicationUrl String?
+  employer String?
+  listingKind String @default("marketplace")
+  locations String?
+  workplaceModel String?
+  geographicRestrictions String?
+  employmentType String?
+  seniority String?
+  compensationCurrency String?
+  compensationPeriod String?
+  sourceUpdatedAt DateTime?
+  timestampSemantics String @default("legacy-imported")
+  qualityEvidence String?
+  missingFromSourceAt DateTime?
+  versions JobVersion[]
+  sightings JobSighting[]
   telegramQueue TelegramQueue?
 
   @@unique([source, sourceProjectId])
@@ -43,4 +59,57 @@ model TelegramQueue {
   attempts  Int       @default(0)
   createdAt DateTime  @default(now())
   failedAt  DateTime?
+  leaseToken String?
+  leaseUntil DateTime?
+}
+
+model CollectionSource {
+ id String @id
+ baselineAt DateTime?
+ lastRunAt DateTime?
+ lastSuccessAt DateTime?
+ failures Int @default(0)
+ cooldownUntil DateTime?
+ leaseToken String?
+ leaseUntil DateTime?
+}
+model CollectionRun {
+ leaseToken String @unique
+ id Int @id @default(autoincrement())
+ sourceId String
+ startedAt DateTime @default(now())
+ finishedAt DateTime?
+ complete Boolean @default(false)
+ scope String
+ errors String
+ sightings JobSighting[]
+}
+model JobVersion {
+ id Int @id @default(autoincrement())
+ jobPostId Int
+ jobPost JobPost @relation(fields:[jobPostId], references:[id], onDelete: Cascade)
+ observedAt DateTime @default(now())
+ hash String
+ content String
+ @@index([jobPostId, hash])
+}
+model JobSighting {
+ id Int @id @default(autoincrement())
+ jobPostId Int
+ jobPost JobPost @relation(fields:[jobPostId], references:[id], onDelete: Cascade)
+ runId Int
+ run CollectionRun @relation(fields:[runId], references:[id], onDelete: Cascade)
+ observedAt DateTime @default(now())
+ @@unique([jobPostId, runId])
+}
+model AlertIdentity {
+ url String @id
+ jobPostId Int
+ createdAt DateTime @default(now())
+}
+
+model RequestHost {
+ host String @id
+ nextRequestAt DateTime
+ cooldownUntil DateTime?
 }

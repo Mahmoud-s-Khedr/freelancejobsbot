@@ -1,0 +1,37 @@
+{
+  "verifiedAt": "2026-10-06",
+  "entities": 575,
+  "platformAssessments": 72,
+  "enabledEmployerTargets": 61,
+  "enabledTargets": 69,
+  "pendingCandidateTargets": 14,
+  "pendingEntities": 514,
+  "providerCounts": {
+    "ashby": 31,
+    "greenhouse": 21,
+    "lever": 9,
+    "himalayas": 1,
+    "remotive": 1,
+    "remoteok": 1,
+    "wwr": 1,
+    "mostaql": 1,
+    "khamsat": 1,
+    "ureed": 1,
+    "nafezly": 1
+  },
+  "existingMigrationPreservedJobs": 660,
+  "testsPassed": 45,
+  "smoke": {
+    "greenhouse": 12,
+    "ashby": 67,
+    "lever": 79,
+    "remotive": 17,
+    "remoteok": 99,
+    "wwr": 89,
+    "himalayasPages": [
+      20,
+      20
+    ]
+  },
+  "telegramSent": 0
+}

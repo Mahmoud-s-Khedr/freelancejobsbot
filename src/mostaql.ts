@@ -141,7 +141,7 @@ export function parseMostaqlListing(html: string, baseUrl: string): MostaqlListi
     if (!sourceProjectId) return
 
     const title = cleanText(chosenAnchor.text())
-    if (!title || title.length < 5) return
+    if (!title) return
 
     const rawText = cleanText($(row).text())
     const publishedRelativeText = cleanText($(row).find('.project__meta time').first().text()) || undefined
