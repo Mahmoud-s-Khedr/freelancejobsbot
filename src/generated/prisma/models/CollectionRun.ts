@@ -424,10 +424,6 @@ export type CollectionRunScalarRelationFilter = {
   isNot?: Prisma.CollectionRunWhereInput
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type CollectionRunCreateNestedOneWithoutSightingsInput = {
   create?: Prisma.XOR<Prisma.CollectionRunCreateWithoutSightingsInput, Prisma.CollectionRunUncheckedCreateWithoutSightingsInput>
   connectOrCreate?: Prisma.CollectionRunCreateOrConnectWithoutSightingsInput

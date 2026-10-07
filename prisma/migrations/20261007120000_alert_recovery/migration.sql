@@ -1,0 +1,2 @@
+ALTER TABLE "JobPost" ADD COLUMN "detailStatus" TEXT NOT NULL DEFAULT 'unknown';
+ALTER TABLE "JobPost" ADD COLUMN "deferredAlert" BOOLEAN NOT NULL DEFAULT false;

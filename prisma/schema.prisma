@@ -42,6 +42,8 @@ model JobPost {
   timestampSemantics String @default("legacy-imported")
   qualityEvidence String?
   missingFromSourceAt DateTime?
+  detailStatus String @default("unknown")
+  deferredAlert Boolean @default(false)
   versions JobVersion[]
   sightings JobSighting[]
   telegramQueue TelegramQueue?

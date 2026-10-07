@@ -5,7 +5,7 @@ Setup and execution:
 ```sh
 pnpm install
 pnpm db:generate
-DATABASE_URL=file:/absolute/path/jobs.db pnpm exec prisma migrate deploy
+DATABASE_URL=file:/absolute/path/jobs.db pnpm db:deploy
 DATABASE_URL=file:/absolute/path/jobs.db pnpm collect
 DATABASE_URL=file:/absolute/path/jobs.db pnpm collect --source remotive
 DATABASE_URL=file:/absolute/path/jobs.db pnpm collect --source greenhouse:boards-api.greenhouse.io:brave
@@ -26,7 +26,7 @@ Jobs are keyed by collection ID plus external ID, allowing distinct tenants to r
 
 Each bounded batch commits job writes, versions, sightings and queue entries in one transaction. A final transaction records run completeness, missing sightings and the baseline; a crash during persistence leaves the run incomplete and retains already committed evidence. Content changes create immutable versions, including a return to earlier content. Queue leases reserve deliveries, retain attempts and terminal failures, and reclaim expired reservations. Telegram can accept a message just before the process crashes; retrying that queue entry can duplicate delivery. No exactly-once delivery guarantee is possible with Telegram's send API.
 
-The tracked `data/source-registry.json` is the runtime registry. Production never reads `reports/` or `tmp/`. Every report entity and platform assessment has a disposition; evidence and unresolved reasons remain attached. Run `pnpm exec tsx scripts/verify-registry.ts --pending` to attempt bounded public verification of pending ATS candidates. This updates only the tracked registry; no Telegram or browser session is involved. Check resulting evidence before committing. Research originals remain unchanged. Browser-dependent sites (WUZZUF, Indeed, LinkedIn, Forasna, etc.) remain deferred.
+The tracked `data/source-registry.json` is the runtime registry. Production never reads `reports/` or `tmp/`. Every report entity and platform assessment has a disposition; evidence and unresolved reasons remain attached. Run `pnpm exec tsx scripts/verify-registry.ts --pending` to attempt bounded public verification of pending ATS candidates. This updates only the tracked registry; no Telegram or browser session is involved. Check resulting evidence before committing. Research originals remain unchanged. Browser-dependent sites now have opt-in collectors; see WEBSITES.md for implementation and live-verification status.
 
 Feed restrictions and source attribution:
 
@@ -42,3 +42,10 @@ Verification: `pnpm test`, `pnpm run typecheck`, `pnpm exec prisma validate`. Ne
 This machine now runs the enabled user service `freelancebot.service`. See [rollout details and monitoring commands](ROLLOUT.md). A reusable unit template is in `deploy/freelancebot.service.example`; fill in absolute paths before installing it on another machine.
 
 Persistent rotated diagnostic logs are enabled; see [log locations, retention, and search commands](LOGGING.md).
+
+
+Website collectors for Indeed, LinkedIn, WUZZUF, Forasna, Bayt, and Wellfound are implemented as opt-in sources. See [WEBSITES.md](WEBSITES.md) for browser installation, session setup, live-verification status, and search coverage limits. Website inventories are rolling search scopes; omissions never mark jobs missing.
+
+Fallback detail status is persisted. New fallback jobs discovered after an employer/feed baseline (or in a marketplace) can be reevaluated once when their details recover. Initial baseline jobs and ordinary edits stay silent. Existing records are not bulk-enrolled for retroactive alerts. To explicitly reevaluate a particular unsent, unqueued record on its next successful detail collection: `pnpm alerts:recover --id JOB_POST_ID`. Source baseline and duplicate-URL checks still apply.
+
+Expired exhausted queue claims are marked failed during delivery and status inspection. Failed queue IDs appear in `sources:status`; retry one deliberately with `pnpm queue:retry --id QUEUE_ID`. This resets attempts without sending immediately. Delivery leases renew during long Telegram Retry-After waits. Retrying an uncertain delivery can duplicate a message already accepted by Telegram before a crash.

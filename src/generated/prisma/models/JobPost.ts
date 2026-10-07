@@ -73,6 +73,8 @@ export type JobPostMinAggregateOutputType = {
   timestampSemantics: string | null
   qualityEvidence: string | null
   missingFromSourceAt: Date | null
+  detailStatus: string | null
+  deferredAlert: boolean | null
 }
 
 export type JobPostMaxAggregateOutputType = {
@@ -110,6 +112,8 @@ export type JobPostMaxAggregateOutputType = {
   timestampSemantics: string | null
   qualityEvidence: string | null
   missingFromSourceAt: Date | null
+  detailStatus: string | null
+  deferredAlert: boolean | null
 }
 
 export type JobPostCountAggregateOutputType = {
@@ -147,6 +151,8 @@ export type JobPostCountAggregateOutputType = {
   timestampSemantics: number
   qualityEvidence: number
   missingFromSourceAt: number
+  detailStatus: number
+  deferredAlert: number
   _all: number
 }
 
@@ -198,6 +204,8 @@ export type JobPostMinAggregateInputType = {
   timestampSemantics?: true
   qualityEvidence?: true
   missingFromSourceAt?: true
+  detailStatus?: true
+  deferredAlert?: true
 }
 
 export type JobPostMaxAggregateInputType = {
@@ -235,6 +243,8 @@ export type JobPostMaxAggregateInputType = {
   timestampSemantics?: true
   qualityEvidence?: true
   missingFromSourceAt?: true
+  detailStatus?: true
+  deferredAlert?: true
 }
 
 export type JobPostCountAggregateInputType = {
@@ -272,6 +282,8 @@ export type JobPostCountAggregateInputType = {
   timestampSemantics?: true
   qualityEvidence?: true
   missingFromSourceAt?: true
+  detailStatus?: true
+  deferredAlert?: true
   _all?: true
 }
 
@@ -396,6 +408,8 @@ export type JobPostGroupByOutputType = {
   timestampSemantics: string
   qualityEvidence: string | null
   missingFromSourceAt: Date | null
+  detailStatus: string
+  deferredAlert: boolean
   _count: JobPostCountAggregateOutputType | null
   _avg: JobPostAvgAggregateOutputType | null
   _sum: JobPostSumAggregateOutputType | null
@@ -456,6 +470,8 @@ export type JobPostWhereInput = {
   timestampSemantics?: Prisma.StringFilter<"JobPost"> | string
   qualityEvidence?: Prisma.StringNullableFilter<"JobPost"> | string | null
   missingFromSourceAt?: Prisma.DateTimeNullableFilter<"JobPost"> | Date | string | null
+  detailStatus?: Prisma.StringFilter<"JobPost"> | string
+  deferredAlert?: Prisma.BoolFilter<"JobPost"> | boolean
   versions?: Prisma.JobVersionListRelationFilter
   sightings?: Prisma.JobSightingListRelationFilter
   telegramQueue?: Prisma.XOR<Prisma.TelegramQueueNullableScalarRelationFilter, Prisma.TelegramQueueWhereInput> | null
@@ -496,6 +512,8 @@ export type JobPostOrderByWithRelationInput = {
   timestampSemantics?: Prisma.SortOrder
   qualityEvidence?: Prisma.SortOrderInput | Prisma.SortOrder
   missingFromSourceAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  detailStatus?: Prisma.SortOrder
+  deferredAlert?: Prisma.SortOrder
   versions?: Prisma.JobVersionOrderByRelationAggregateInput
   sightings?: Prisma.JobSightingOrderByRelationAggregateInput
   telegramQueue?: Prisma.TelegramQueueOrderByWithRelationInput
@@ -540,6 +558,8 @@ export type JobPostWhereUniqueInput = Prisma.AtLeast<{
   timestampSemantics?: Prisma.StringFilter<"JobPost"> | string
   qualityEvidence?: Prisma.StringNullableFilter<"JobPost"> | string | null
   missingFromSourceAt?: Prisma.DateTimeNullableFilter<"JobPost"> | Date | string | null
+  detailStatus?: Prisma.StringFilter<"JobPost"> | string
+  deferredAlert?: Prisma.BoolFilter<"JobPost"> | boolean
   versions?: Prisma.JobVersionListRelationFilter
   sightings?: Prisma.JobSightingListRelationFilter
   telegramQueue?: Prisma.XOR<Prisma.TelegramQueueNullableScalarRelationFilter, Prisma.TelegramQueueWhereInput> | null
@@ -580,6 +600,8 @@ export type JobPostOrderByWithAggregationInput = {
   timestampSemantics?: Prisma.SortOrder
   qualityEvidence?: Prisma.SortOrderInput | Prisma.SortOrder
   missingFromSourceAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  detailStatus?: Prisma.SortOrder
+  deferredAlert?: Prisma.SortOrder
   _count?: Prisma.JobPostCountOrderByAggregateInput
   _avg?: Prisma.JobPostAvgOrderByAggregateInput
   _max?: Prisma.JobPostMaxOrderByAggregateInput
@@ -625,6 +647,8 @@ export type JobPostScalarWhereWithAggregatesInput = {
   timestampSemantics?: Prisma.StringWithAggregatesFilter<"JobPost"> | string
   qualityEvidence?: Prisma.StringNullableWithAggregatesFilter<"JobPost"> | string | null
   missingFromSourceAt?: Prisma.DateTimeNullableWithAggregatesFilter<"JobPost"> | Date | string | null
+  detailStatus?: Prisma.StringWithAggregatesFilter<"JobPost"> | string
+  deferredAlert?: Prisma.BoolWithAggregatesFilter<"JobPost"> | boolean
 }
 
 export type JobPostCreateInput = {
@@ -661,6 +685,8 @@ export type JobPostCreateInput = {
   timestampSemantics?: string
   qualityEvidence?: string | null
   missingFromSourceAt?: Date | string | null
+  detailStatus?: string
+  deferredAlert?: boolean
   versions?: Prisma.JobVersionCreateNestedManyWithoutJobPostInput
   sightings?: Prisma.JobSightingCreateNestedManyWithoutJobPostInput
   telegramQueue?: Prisma.TelegramQueueCreateNestedOneWithoutJobPostInput
@@ -701,6 +727,8 @@ export type JobPostUncheckedCreateInput = {
   timestampSemantics?: string
   qualityEvidence?: string | null
   missingFromSourceAt?: Date | string | null
+  detailStatus?: string
+  deferredAlert?: boolean
   versions?: Prisma.JobVersionUncheckedCreateNestedManyWithoutJobPostInput
   sightings?: Prisma.JobSightingUncheckedCreateNestedManyWithoutJobPostInput
   telegramQueue?: Prisma.TelegramQueueUncheckedCreateNestedOneWithoutJobPostInput
@@ -740,6 +768,8 @@ export type JobPostUpdateInput = {
   timestampSemantics?: Prisma.StringFieldUpdateOperationsInput | string
   qualityEvidence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   missingFromSourceAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  detailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  deferredAlert?: Prisma.BoolFieldUpdateOperationsInput | boolean
   versions?: Prisma.JobVersionUpdateManyWithoutJobPostNestedInput
   sightings?: Prisma.JobSightingUpdateManyWithoutJobPostNestedInput
   telegramQueue?: Prisma.TelegramQueueUpdateOneWithoutJobPostNestedInput
@@ -780,6 +810,8 @@ export type JobPostUncheckedUpdateInput = {
   timestampSemantics?: Prisma.StringFieldUpdateOperationsInput | string
   qualityEvidence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   missingFromSourceAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  detailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  deferredAlert?: Prisma.BoolFieldUpdateOperationsInput | boolean
   versions?: Prisma.JobVersionUncheckedUpdateManyWithoutJobPostNestedInput
   sightings?: Prisma.JobSightingUncheckedUpdateManyWithoutJobPostNestedInput
   telegramQueue?: Prisma.TelegramQueueUncheckedUpdateOneWithoutJobPostNestedInput
@@ -820,6 +852,8 @@ export type JobPostCreateManyInput = {
   timestampSemantics?: string
   qualityEvidence?: string | null
   missingFromSourceAt?: Date | string | null
+  detailStatus?: string
+  deferredAlert?: boolean
 }
 
 export type JobPostUpdateManyMutationInput = {
@@ -856,6 +890,8 @@ export type JobPostUpdateManyMutationInput = {
   timestampSemantics?: Prisma.StringFieldUpdateOperationsInput | string
   qualityEvidence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   missingFromSourceAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  detailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  deferredAlert?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type JobPostUncheckedUpdateManyInput = {
@@ -893,6 +929,8 @@ export type JobPostUncheckedUpdateManyInput = {
   timestampSemantics?: Prisma.StringFieldUpdateOperationsInput | string
   qualityEvidence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   missingFromSourceAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  detailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  deferredAlert?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type JobPostSourceSourceProjectIdCompoundUniqueInput = {
@@ -935,6 +973,8 @@ export type JobPostCountOrderByAggregateInput = {
   timestampSemantics?: Prisma.SortOrder
   qualityEvidence?: Prisma.SortOrder
   missingFromSourceAt?: Prisma.SortOrder
+  detailStatus?: Prisma.SortOrder
+  deferredAlert?: Prisma.SortOrder
 }
 
 export type JobPostAvgOrderByAggregateInput = {
@@ -978,6 +1018,8 @@ export type JobPostMaxOrderByAggregateInput = {
   timestampSemantics?: Prisma.SortOrder
   qualityEvidence?: Prisma.SortOrder
   missingFromSourceAt?: Prisma.SortOrder
+  detailStatus?: Prisma.SortOrder
+  deferredAlert?: Prisma.SortOrder
 }
 
 export type JobPostMinOrderByAggregateInput = {
@@ -1015,6 +1057,8 @@ export type JobPostMinOrderByAggregateInput = {
   timestampSemantics?: Prisma.SortOrder
   qualityEvidence?: Prisma.SortOrder
   missingFromSourceAt?: Prisma.SortOrder
+  detailStatus?: Prisma.SortOrder
+  deferredAlert?: Prisma.SortOrder
 }
 
 export type JobPostSumOrderByAggregateInput = {
@@ -1050,6 +1094,10 @@ export type NullableIntFieldUpdateOperationsInput = {
 
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
 }
 
 export type IntFieldUpdateOperationsInput = {
@@ -1136,6 +1184,8 @@ export type JobPostCreateWithoutTelegramQueueInput = {
   timestampSemantics?: string
   qualityEvidence?: string | null
   missingFromSourceAt?: Date | string | null
+  detailStatus?: string
+  deferredAlert?: boolean
   versions?: Prisma.JobVersionCreateNestedManyWithoutJobPostInput
   sightings?: Prisma.JobSightingCreateNestedManyWithoutJobPostInput
 }
@@ -1175,6 +1225,8 @@ export type JobPostUncheckedCreateWithoutTelegramQueueInput = {
   timestampSemantics?: string
   qualityEvidence?: string | null
   missingFromSourceAt?: Date | string | null
+  detailStatus?: string
+  deferredAlert?: boolean
   versions?: Prisma.JobVersionUncheckedCreateNestedManyWithoutJobPostInput
   sightings?: Prisma.JobSightingUncheckedCreateNestedManyWithoutJobPostInput
 }
@@ -1229,6 +1281,8 @@ export type JobPostUpdateWithoutTelegramQueueInput = {
   timestampSemantics?: Prisma.StringFieldUpdateOperationsInput | string
   qualityEvidence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   missingFromSourceAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  detailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  deferredAlert?: Prisma.BoolFieldUpdateOperationsInput | boolean
   versions?: Prisma.JobVersionUpdateManyWithoutJobPostNestedInput
   sightings?: Prisma.JobSightingUpdateManyWithoutJobPostNestedInput
 }
@@ -1268,6 +1322,8 @@ export type JobPostUncheckedUpdateWithoutTelegramQueueInput = {
   timestampSemantics?: Prisma.StringFieldUpdateOperationsInput | string
   qualityEvidence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   missingFromSourceAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  detailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  deferredAlert?: Prisma.BoolFieldUpdateOperationsInput | boolean
   versions?: Prisma.JobVersionUncheckedUpdateManyWithoutJobPostNestedInput
   sightings?: Prisma.JobSightingUncheckedUpdateManyWithoutJobPostNestedInput
 }
@@ -1306,6 +1362,8 @@ export type JobPostCreateWithoutVersionsInput = {
   timestampSemantics?: string
   qualityEvidence?: string | null
   missingFromSourceAt?: Date | string | null
+  detailStatus?: string
+  deferredAlert?: boolean
   sightings?: Prisma.JobSightingCreateNestedManyWithoutJobPostInput
   telegramQueue?: Prisma.TelegramQueueCreateNestedOneWithoutJobPostInput
 }
@@ -1345,6 +1403,8 @@ export type JobPostUncheckedCreateWithoutVersionsInput = {
   timestampSemantics?: string
   qualityEvidence?: string | null
   missingFromSourceAt?: Date | string | null
+  detailStatus?: string
+  deferredAlert?: boolean
   sightings?: Prisma.JobSightingUncheckedCreateNestedManyWithoutJobPostInput
   telegramQueue?: Prisma.TelegramQueueUncheckedCreateNestedOneWithoutJobPostInput
 }
@@ -1399,6 +1459,8 @@ export type JobPostUpdateWithoutVersionsInput = {
   timestampSemantics?: Prisma.StringFieldUpdateOperationsInput | string
   qualityEvidence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   missingFromSourceAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  detailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  deferredAlert?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sightings?: Prisma.JobSightingUpdateManyWithoutJobPostNestedInput
   telegramQueue?: Prisma.TelegramQueueUpdateOneWithoutJobPostNestedInput
 }
@@ -1438,6 +1500,8 @@ export type JobPostUncheckedUpdateWithoutVersionsInput = {
   timestampSemantics?: Prisma.StringFieldUpdateOperationsInput | string
   qualityEvidence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   missingFromSourceAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  detailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  deferredAlert?: Prisma.BoolFieldUpdateOperationsInput | boolean
   sightings?: Prisma.JobSightingUncheckedUpdateManyWithoutJobPostNestedInput
   telegramQueue?: Prisma.TelegramQueueUncheckedUpdateOneWithoutJobPostNestedInput
 }
@@ -1476,6 +1540,8 @@ export type JobPostCreateWithoutSightingsInput = {
   timestampSemantics?: string
   qualityEvidence?: string | null
   missingFromSourceAt?: Date | string | null
+  detailStatus?: string
+  deferredAlert?: boolean
   versions?: Prisma.JobVersionCreateNestedManyWithoutJobPostInput
   telegramQueue?: Prisma.TelegramQueueCreateNestedOneWithoutJobPostInput
 }
@@ -1515,6 +1581,8 @@ export type JobPostUncheckedCreateWithoutSightingsInput = {
   timestampSemantics?: string
   qualityEvidence?: string | null
   missingFromSourceAt?: Date | string | null
+  detailStatus?: string
+  deferredAlert?: boolean
   versions?: Prisma.JobVersionUncheckedCreateNestedManyWithoutJobPostInput
   telegramQueue?: Prisma.TelegramQueueUncheckedCreateNestedOneWithoutJobPostInput
 }
@@ -1569,6 +1637,8 @@ export type JobPostUpdateWithoutSightingsInput = {
   timestampSemantics?: Prisma.StringFieldUpdateOperationsInput | string
   qualityEvidence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   missingFromSourceAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  detailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  deferredAlert?: Prisma.BoolFieldUpdateOperationsInput | boolean
   versions?: Prisma.JobVersionUpdateManyWithoutJobPostNestedInput
   telegramQueue?: Prisma.TelegramQueueUpdateOneWithoutJobPostNestedInput
 }
@@ -1608,6 +1678,8 @@ export type JobPostUncheckedUpdateWithoutSightingsInput = {
   timestampSemantics?: Prisma.StringFieldUpdateOperationsInput | string
   qualityEvidence?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   missingFromSourceAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  detailStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  deferredAlert?: Prisma.BoolFieldUpdateOperationsInput | boolean
   versions?: Prisma.JobVersionUncheckedUpdateManyWithoutJobPostNestedInput
   telegramQueue?: Prisma.TelegramQueueUncheckedUpdateOneWithoutJobPostNestedInput
 }
@@ -1687,6 +1759,8 @@ export type JobPostSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   timestampSemantics?: boolean
   qualityEvidence?: boolean
   missingFromSourceAt?: boolean
+  detailStatus?: boolean
+  deferredAlert?: boolean
   versions?: boolean | Prisma.JobPost$versionsArgs<ExtArgs>
   sightings?: boolean | Prisma.JobPost$sightingsArgs<ExtArgs>
   telegramQueue?: boolean | Prisma.JobPost$telegramQueueArgs<ExtArgs>
@@ -1728,6 +1802,8 @@ export type JobPostSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   timestampSemantics?: boolean
   qualityEvidence?: boolean
   missingFromSourceAt?: boolean
+  detailStatus?: boolean
+  deferredAlert?: boolean
 }, ExtArgs["result"]["jobPost"]>
 
 export type JobPostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1765,6 +1841,8 @@ export type JobPostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   timestampSemantics?: boolean
   qualityEvidence?: boolean
   missingFromSourceAt?: boolean
+  detailStatus?: boolean
+  deferredAlert?: boolean
 }, ExtArgs["result"]["jobPost"]>
 
 export type JobPostSelectScalar = {
@@ -1802,9 +1880,11 @@ export type JobPostSelectScalar = {
   timestampSemantics?: boolean
   qualityEvidence?: boolean
   missingFromSourceAt?: boolean
+  detailStatus?: boolean
+  deferredAlert?: boolean
 }
 
-export type JobPostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "source" | "sourceProjectId" | "title" | "url" | "description" | "rawText" | "category" | "status" | "publishedAt" | "budgetMin" | "budgetMax" | "budgetText" | "durationText" | "skills" | "lastSeenAt" | "contentHash" | "sentAt" | "createdAt" | "updatedAt" | "applicationUrl" | "employer" | "listingKind" | "locations" | "workplaceModel" | "geographicRestrictions" | "employmentType" | "seniority" | "compensationCurrency" | "compensationPeriod" | "sourceUpdatedAt" | "timestampSemantics" | "qualityEvidence" | "missingFromSourceAt", ExtArgs["result"]["jobPost"]>
+export type JobPostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "source" | "sourceProjectId" | "title" | "url" | "description" | "rawText" | "category" | "status" | "publishedAt" | "budgetMin" | "budgetMax" | "budgetText" | "durationText" | "skills" | "lastSeenAt" | "contentHash" | "sentAt" | "createdAt" | "updatedAt" | "applicationUrl" | "employer" | "listingKind" | "locations" | "workplaceModel" | "geographicRestrictions" | "employmentType" | "seniority" | "compensationCurrency" | "compensationPeriod" | "sourceUpdatedAt" | "timestampSemantics" | "qualityEvidence" | "missingFromSourceAt" | "detailStatus" | "deferredAlert", ExtArgs["result"]["jobPost"]>
 export type JobPostInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   versions?: boolean | Prisma.JobPost$versionsArgs<ExtArgs>
   sightings?: boolean | Prisma.JobPost$sightingsArgs<ExtArgs>
@@ -1856,6 +1936,8 @@ export type $JobPostPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     timestampSemantics: string
     qualityEvidence: string | null
     missingFromSourceAt: Date | null
+    detailStatus: string
+    deferredAlert: boolean
   }, ExtArgs["result"]["jobPost"]>
   composites: {}
 }
@@ -2316,6 +2398,8 @@ export interface JobPostFieldRefs {
   readonly timestampSemantics: Prisma.FieldRef<"JobPost", 'String'>
   readonly qualityEvidence: Prisma.FieldRef<"JobPost", 'String'>
   readonly missingFromSourceAt: Prisma.FieldRef<"JobPost", 'DateTime'>
+  readonly detailStatus: Prisma.FieldRef<"JobPost", 'String'>
+  readonly deferredAlert: Prisma.FieldRef<"JobPost", 'Boolean'>
 }
 
 

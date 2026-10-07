@@ -4,9 +4,17 @@ import { fileURLToPath } from "node:url";
 import { prisma } from "../db.js";
 import { registry } from "./registry.js";
 import { collect } from "./adapters.js";
-import { claimSource, persistInventory, drainQueue } from "./engine.js";
+import {
+  claimSource,
+  persistInventory,
+  drainQueue,
+  retryFailedQueue,
+  recoverExhaustedQueue,
+} from "./engine.js";
 import { requester } from "./request.js";
 import { message } from "./notifications.js";
+import { isWebsite, collectWebsite } from "./websites/collect.js";
+import { withBrowser, browserSession } from "./websites/browser.js";
 import { collectMarketplace } from "./marketplaces.js";
 import type { Inventory, Target } from "./types.js";
 import { sendTelegramMessage } from "../index.js";
@@ -48,7 +56,22 @@ export async function run(selected?: string, notify = false, force = false) {
         let inv: Inventory;
         let streamedQueued = 0;
         try {
-          if (["mostaql", "khamsat", "ureed", "nafezly"].includes(t.provider)) {
+          if (isWebsite(t.provider)) {
+            const provider = t.provider;
+            const full = await prisma.jobPost.findMany({
+              where: { source: t.id, detailStatus: "full" },
+              select: { sourceProjectId: true },
+            });
+            inv = await withBrowser(prisma, provider, t.id, token, (session) =>
+              collectWebsite(
+                t,
+                session,
+                new Set(full.map((j) => j.sourceProjectId)),
+              ),
+            );
+          } else if (
+            ["mostaql", "khamsat", "ureed", "nafezly"].includes(t.provider)
+          ) {
             inv = await collectMarketplace(t, requester(prisma, t.id, token));
           } else
             inv = await collect(
@@ -119,7 +142,48 @@ export async function main(args = process.argv.slice(2)) {
     const i = args.indexOf(name);
     return i < 0 ? undefined : args[i + 1];
   };
+  if (command === "browser-session") {
+    const source = option("--source");
+    if (!source || !isWebsite(source))
+      throw Error(
+        "browser-session requires --source indeed|linkedin|wuzzuf|forasna|bayt|wellfound",
+      );
+    const r = await registry();
+    const target = r.targets.find((t) => t.provider === source);
+    if (!target) throw Error("Website target not registered");
+    await browserSession(source, target.url);
+    return;
+  }
+  if (command === "alerts-recover") {
+    const raw = option("--id");
+    const id = Number(raw);
+    if (!raw || !Number.isSafeInteger(id) || id < 1)
+      throw Error("alerts-recover requires a positive JobPost --id");
+    const result = await prisma.jobPost.updateMany({
+      where: { id, sentAt: null, telegramQueue: { is: null } },
+      data: { deferredAlert: true, detailStatus: "fallback" },
+    });
+    if (!result.count) throw Error("No unqueued, unsent job matches that ID");
+    console.log(
+      JSON.stringify({
+        recoveryRequested: id,
+        delivery: "reevaluated after successful detail collection",
+      }),
+    );
+    return;
+  }
+  if (command === "queue-retry") {
+    const raw = option("--id");
+    const id = Number(raw);
+    if (!raw || !Number.isSafeInteger(id) || id < 1)
+      throw Error("queue-retry requires a positive --id");
+    const count = await retryFailedQueue(prisma, id);
+    if (!count) throw Error("No failed queue entry matches that ID");
+    console.log(JSON.stringify({ retried: count, queueId: id }));
+    return;
+  }
   if (command === "status") {
+    await recoverExhaustedQueue(prisma);
     const r = await registry();
     console.log(
       JSON.stringify(
@@ -131,6 +195,15 @@ export async function main(args = process.argv.slice(2)) {
             .length,
           targets: r.targets,
           health: await prisma.collectionSource.findMany(),
+          failedDeliveries: await prisma.telegramQueue.findMany({
+            where: { failedAt: { not: null } },
+            select: {
+              id: true,
+              jobPostId: true,
+              attempts: true,
+              failedAt: true,
+            },
+          }),
           recentRuns: await prisma.collectionRun.findMany({
             orderBy: { id: "desc" },
             take: 20,

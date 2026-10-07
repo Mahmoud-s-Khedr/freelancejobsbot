@@ -20,24 +20,7 @@ export function requester(
           });
           if (!renewed.count) throw Error("Collection lease lost");
         }
-        const delay = await db.$transaction(async (tx) => {
-          const state = await tx.requestHost.upsert({
-            where: { host },
-            create: { host, nextRequestAt: new Date() },
-            update: {},
-          });
-          if (state.cooldownUntil && state.cooldownUntil > new Date())
-            throw Error(
-              `Host cooldown until ${state.cooldownUntil.toISOString()}`,
-            );
-          const next = Math.max(Date.now(), state.nextRequestAt.getTime());
-          await tx.requestHost.update({
-            where: { host },
-            data: { nextRequestAt: new Date(next + 1000) },
-          });
-          return next - Date.now();
-        });
-        if (delay > 0) await new Promise((r) => setTimeout(r, delay));
+        await paceHost(db, sourceId, url);
         const requestId = randomUUID();
         const started = Date.now();
         logEvent("info", "http_request_started", {
@@ -113,4 +96,64 @@ export function requester(
     hosts.set(host, task);
     return task;
   };
+}
+
+// Shared reservation for HTTP and browser navigation across cooperating workers.
+export async function paceHost(
+  db: PrismaClient,
+  sourceId: string,
+  url: string,
+): Promise<void> {
+  const host = new URL(url).hostname;
+  const delay = await db.$transaction(async (tx) => {
+    const state = await tx.requestHost.upsert({
+      where: { host },
+      create: { host, nextRequestAt: new Date() },
+      update: {},
+    });
+    if (state.cooldownUntil && state.cooldownUntil > new Date())
+      throw Error(`Host cooldown until ${state.cooldownUntil.toISOString()}`);
+    const source = await tx.collectionSource.findUnique({
+      where: { id: sourceId },
+    });
+    if (source?.cooldownUntil && source.cooldownUntil > new Date())
+      throw Error(
+        `Source cooldown until ${source.cooldownUntil.toISOString()}`,
+      );
+    const next = Math.max(Date.now(), state.nextRequestAt.getTime());
+    await tx.requestHost.update({
+      where: { host },
+      data: { nextRequestAt: new Date(next + 1000) },
+    });
+    return next - Date.now();
+  });
+  if (delay > 0) await new Promise((r) => setTimeout(r, delay));
+}
+export async function applyCooldown(
+  db: PrismaClient,
+  sourceId: string,
+  url: string,
+  retryAfter: string | null,
+): Promise<void> {
+  const seconds = retryAfter === null ? NaN : Number(retryAfter);
+  const parsed =
+    retryAfter && !Number.isFinite(seconds)
+      ? Date.parse(retryAfter)
+      : Date.now() + seconds * 1000;
+  const until = new Date(
+    Math.max(Date.now() + 300_000, Number.isFinite(parsed) ? parsed : 0),
+  );
+  await db.collectionSource.updateMany({
+    where: { id: sourceId },
+    data: { cooldownUntil: until },
+  });
+  await db.requestHost.upsert({
+    where: { host: new URL(url).hostname },
+    create: {
+      host: new URL(url).hostname,
+      nextRequestAt: until,
+      cooldownUntil: until,
+    },
+    update: { cooldownUntil: until },
+  });
 }

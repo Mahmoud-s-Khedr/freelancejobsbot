@@ -15241,7 +15241,7 @@
       "effort_estimate": "1\u20133 engineer-weeks or blocked",
       "dependencies_and_next_steps": "Native alerts/manual search; only contractually authorized partner data for ingestion.",
       "evidence_urls": "https://www.linkedin.com/jobs/; https://www.linkedin.com/legal/user-agreement",
-      "local_evidence": "../tmp/RTJobs/boards/linkedin/scraper.py: LinkedInSpider, _parse_linkedin_time",
+      "local_evidence": "src/collection/websites; tests/websites.test.ts",
       "recommendation": "Native alerts/manual search; only contractually authorized partner data for ingestion.",
       "field_title": "unknown/not structurally verified in sample; see assessment",
       "field_description": "unknown/not structurally verified in sample; see assessment",
@@ -15259,9 +15259,9 @@
       "field_status": "unknown/not structurally verified in sample; see assessment",
       "unresolved_questions": "Access/reuse scope; complete pagination/backfill; field semantics; closure evidence. No detail validated.",
       "id": "P0016",
-      "targetId": null,
+      "targetId": "linkedin",
       "status": "pending",
-      "pendingReason": "Outside initial adapters or employer-route verification required"
+      "pendingReason": "Collector implemented; opt-in browser configuration and live verification required"
     },
     {
       "platform": "Indeed",
@@ -15295,7 +15295,7 @@
       "effort_estimate": "1\u20133 engineer-weeks or blocked",
       "dependencies_and_next_steps": "Native alerts or a permitted partner route; defer scraping under current terms.",
       "evidence_urls": "https://www.indeed.com/; https://www.indeed.com/legal",
-      "local_evidence": "../tmp/RTJobs/boards/indeed/scraper.py: _extract_jobs, _extract_detail",
+      "local_evidence": "src/collection/websites; tests/websites.test.ts",
       "recommendation": "Native alerts or a permitted partner route; defer scraping under current terms.",
       "field_title": "unknown/not structurally verified in sample; see assessment",
       "field_description": "unknown/not structurally verified in sample; see assessment",
@@ -15313,9 +15313,9 @@
       "field_status": "unknown/not structurally verified in sample; see assessment",
       "unresolved_questions": "Access/reuse scope; complete pagination/backfill; field semantics; closure evidence. No detail validated.",
       "id": "P0017",
-      "targetId": null,
+      "targetId": "indeed",
       "status": "pending",
-      "pendingReason": "Outside initial adapters or employer-route verification required"
+      "pendingReason": "Collector implemented; opt-in browser configuration and live verification required"
     },
     {
       "platform": "Glassdoor",
@@ -15403,7 +15403,7 @@
       "effort_estimate": "1\u20133 engineer-weeks or blocked",
       "dependencies_and_next_steps": "Native alerts/manual discovery; defer automated collection until authorized.",
       "evidence_urls": "https://wellfound.com/jobs; https://wellfound.com/terms",
-      "local_evidence": "no current implementation identified",
+      "local_evidence": "src/collection/websites; tests/websites.test.ts",
       "recommendation": "Native alerts/manual discovery; defer automated collection until authorized.",
       "field_title": "observed structured key: title",
       "field_description": "observed structured key: description",
@@ -15421,9 +15421,9 @@
       "field_status": "unknown/not structurally verified in sample; see assessment",
       "unresolved_questions": "Access/reuse scope; complete pagination/backfill; field semantics; closure evidence. Single detail sample only.",
       "id": "P0019",
-      "targetId": null,
+      "targetId": "wellfound",
       "status": "pending",
-      "pendingReason": "Outside initial adapters or employer-route verification required"
+      "pendingReason": "Collector implemented; opt-in browser configuration and live verification required"
     },
     {
       "platform": "FlexJobs",
@@ -16375,7 +16375,7 @@
       "effort_estimate": "1\u20133 engineer-weeks or blocked",
       "dependencies_and_next_steps": "Strong manual Egypt/MENA search; defer automated route until permitted access.",
       "evidence_urls": "https://www.bayt.com/en/egypt/jobs/",
-      "local_evidence": "no current implementation identified",
+      "local_evidence": "src/collection/websites; tests/websites.test.ts",
       "recommendation": "Strong manual Egypt/MENA search; defer automated route until permitted access.",
       "field_title": "unknown/not structurally verified in sample; see assessment",
       "field_description": "unknown/not structurally verified in sample; see assessment",
@@ -16393,9 +16393,9 @@
       "field_status": "unknown/not structurally verified in sample; see assessment",
       "unresolved_questions": "Access/reuse scope; complete pagination/backfill; field semantics; closure evidence. No detail validated.",
       "id": "P0037",
-      "targetId": null,
+      "targetId": "bayt",
       "status": "pending",
-      "pendingReason": "Outside initial adapters or employer-route verification required"
+      "pendingReason": "Collector implemented; opt-in browser configuration and live verification required"
     },
     {
       "platform": "GulfTalent",
@@ -16537,7 +16537,7 @@
       "effort_estimate": "1\u20133 engineer-weeks or blocked",
       "dependencies_and_next_steps": "Strong manual local job discovery; seek permitted access before ingestion.",
       "evidence_urls": "https://wuzzuf.net/search/jobs/?q=&a=navbg",
-      "local_evidence": "../tmp/RTJobs/boards/wuzzuf/scraper.py: _extract_state, _enrich, _extract_jobs",
+      "local_evidence": "src/collection/websites; tests/websites.test.ts",
       "recommendation": "Strong manual local job discovery; seek permitted access before ingestion.",
       "field_title": "unknown/not structurally verified in sample; see assessment",
       "field_description": "unknown/not structurally verified in sample; see assessment",
@@ -16555,9 +16555,9 @@
       "field_status": "unknown/not structurally verified in sample; see assessment",
       "unresolved_questions": "Access/reuse scope; complete pagination/backfill; field semantics; closure evidence. No detail validated.",
       "id": "P0040",
-      "targetId": null,
+      "targetId": "wuzzuf",
       "status": "pending",
-      "pendingReason": "Outside initial adapters or employer-route verification required"
+      "pendingReason": "Collector implemented; opt-in browser configuration and live verification required"
     },
     {
       "platform": "Akhtaboot",
@@ -16861,7 +16861,7 @@
       "effort_estimate": "3\u20137 engineer-days",
       "dependencies_and_next_steps": "High-priority nontech Egypt pilot after history infrastructure and permission check.",
       "evidence_urls": "https://forasna.com/",
-      "local_evidence": "no current implementation identified",
+      "local_evidence": "src/collection/websites; tests/websites.test.ts",
       "recommendation": "High-priority nontech Egypt pilot after history infrastructure and permission check.",
       "field_title": "observed structured key: title",
       "field_description": "observed structured key: description",
@@ -16879,9 +16879,9 @@
       "field_status": "observed structured key: validThrough",
       "unresolved_questions": "Access/reuse scope; complete pagination/backfill; field semantics; closure evidence. Single detail sample only.",
       "id": "P0046",
-      "targetId": null,
+      "targetId": "forasna",
       "status": "pending",
-      "pendingReason": "Outside initial adapters or employer-route verification required"
+      "pendingReason": "Collector implemented; opt-in browser configuration and live verification required"
     },
     {
       "platform": "Shaghalni \u2014 \u0634\u063a\u0644\u0646\u064a",
@@ -22580,6 +22580,176 @@
       "attribution": "nafezly",
       "intervalHours": 0.08333333333333333,
       "restrictions": "Personal use only"
+    },
+    {
+      "id": "indeed",
+      "provider": "indeed",
+      "url": "https://eg.indeed.com/jobs?q=software&l=Egypt&sort=date",
+      "employer": "",
+      "entityIds": [],
+      "evidence": [
+        {
+          "provenance": "RTJobs-referenced parser implementation; fixture validation; live access not yet verified",
+          "reference": "https://github.com/Mahmoud-s-Khedr/RTJobs/tree/b2c3da9ea7bb763472f66f273b264d4222ec0208"
+        },
+        {
+          "checkedAt": "2026-10-07",
+          "provenance": "Bounded public smoke check; isolated database; notifications disabled",
+          "method": "isolated Chromium collection, first configured search page",
+          "jobs": 15,
+          "fullDetails": 10,
+          "result": "bounded inventory validated; five details deferred by cap",
+          "liveVerified": true
+        }
+      ],
+      "status": "pending",
+      "pendingReason": "Opt-in configuration required; bounded live extraction verified",
+      "attribution": "Indeed",
+      "intervalHours": 1,
+      "restrictions": "Bounded search coverage; personal collection",
+      "implementationStatus": "bounded-live-checked",
+      "liveVerified": true
+    },
+    {
+      "id": "linkedin",
+      "provider": "linkedin",
+      "url": "https://www.linkedin.com/jobs/search/?keywords=software&location=Egypt&sortBy=DD&start=0",
+      "employer": "",
+      "entityIds": [],
+      "evidence": [
+        {
+          "provenance": "RTJobs-referenced parser implementation; fixture validation; live access not yet verified",
+          "reference": "https://github.com/Mahmoud-s-Khedr/RTJobs/tree/b2c3da9ea7bb763472f66f273b264d4222ec0208"
+        },
+        {
+          "checkedAt": "2026-10-07",
+          "provenance": "Bounded public smoke check; isolated database; notifications disabled",
+          "method": "public HTML fixture extraction and isolated Chromium collection",
+          "jobsParsedFromPublicHtml": 60,
+          "result": "guest parser validated; Chromium request returned HTTP 999; authenticated session unverified",
+          "liveVerified": false
+        }
+      ],
+      "status": "pending",
+      "pendingReason": "Opt-in configuration/session and successful live collection verification required",
+      "attribution": "LinkedIn",
+      "intervalHours": 1,
+      "restrictions": "Bounded search coverage; personal collection",
+      "implementationStatus": "fixture-tested",
+      "liveVerified": false
+    },
+    {
+      "id": "wuzzuf",
+      "provider": "wuzzuf",
+      "url": "https://wuzzuf.net/search/jobs?q=software&start=0",
+      "employer": "",
+      "entityIds": [],
+      "evidence": [
+        {
+          "provenance": "RTJobs-referenced parser implementation; fixture validation; live access not yet verified",
+          "reference": "https://github.com/Mahmoud-s-Khedr/RTJobs/tree/b2c3da9ea7bb763472f66f273b264d4222ec0208"
+        },
+        {
+          "checkedAt": "2026-10-07",
+          "provenance": "Bounded public smoke check; isolated database; notifications disabled",
+          "method": "isolated Chromium collection with one-page cap",
+          "jobs": 15,
+          "fullDetails": 15,
+          "result": "first-page extraction validated; pagination cap recorded incomplete",
+          "liveVerified": true
+        }
+      ],
+      "status": "pending",
+      "pendingReason": "Opt-in configuration required; bounded live extraction verified",
+      "attribution": "WUZZUF",
+      "intervalHours": 1,
+      "restrictions": "Bounded search coverage; personal collection",
+      "implementationStatus": "bounded-live-checked",
+      "liveVerified": true
+    },
+    {
+      "id": "forasna",
+      "provider": "forasna",
+      "url": "https://forasna.com/",
+      "employer": "",
+      "entityIds": [],
+      "evidence": [
+        {
+          "provenance": "Generic JobPosting collector; synthetic fixture validation; live provider payload not yet verified"
+        },
+        {
+          "checkedAt": "2026-10-07",
+          "provenance": "Bounded public smoke check; isolated database; notifications disabled",
+          "method": "public detail validation and isolated Chromium collection with one-detail cap",
+          "jobs": 20,
+          "fullDetails": 1,
+          "result": "listing discovery and one detail validated; remaining details capped",
+          "liveVerified": true
+        }
+      ],
+      "status": "pending",
+      "pendingReason": "Opt-in configuration required; bounded live extraction verified",
+      "attribution": "Forasna",
+      "intervalHours": 1,
+      "restrictions": "Bounded search coverage; personal collection",
+      "implementationStatus": "bounded-live-checked",
+      "liveVerified": true
+    },
+    {
+      "id": "bayt",
+      "provider": "bayt",
+      "url": "https://www.bayt.com/en/egypt/jobs/",
+      "employer": "",
+      "entityIds": [],
+      "evidence": [
+        {
+          "provenance": "Generic JobPosting collector; synthetic fixture validation; live provider payload not yet verified"
+        },
+        {
+          "checkedAt": "2026-10-07",
+          "provenance": "Bounded public smoke check; isolated database; notifications disabled",
+          "method": "bounded public search/detail checks",
+          "searchStatus": 200,
+          "detailStatus": 403,
+          "result": "real detail extraction remains unverified",
+          "liveVerified": false
+        }
+      ],
+      "status": "pending",
+      "pendingReason": "Opt-in configuration/session and successful live collection verification required",
+      "attribution": "Bayt",
+      "intervalHours": 1,
+      "restrictions": "Bounded search coverage; personal collection",
+      "implementationStatus": "fixture-tested",
+      "liveVerified": false
+    },
+    {
+      "id": "wellfound",
+      "provider": "wellfound",
+      "url": "https://wellfound.com/jobs",
+      "employer": "",
+      "entityIds": [],
+      "evidence": [
+        {
+          "provenance": "Generic JobPosting collector; synthetic fixture validation; live provider payload not yet verified"
+        },
+        {
+          "checkedAt": "2026-10-07",
+          "provenance": "Bounded public smoke check; isolated database; notifications disabled",
+          "method": "bounded public search/detail checks",
+          "searchStatus": 200,
+          "detailStatus": 403,
+          "result": "real detail extraction remains unverified",
+          "liveVerified": false
+        }
+      ],
+      "status": "pending",
+      "pendingReason": "Opt-in configuration/session and successful live collection verification required",
+      "attribution": "Wellfound",
+      "intervalHours": 1,
+      "restrictions": "Bounded search coverage; personal collection",
+      "implementationStatus": "fixture-tested",
+      "liveVerified": false
     }
   ]
 }

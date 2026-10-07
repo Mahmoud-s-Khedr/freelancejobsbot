@@ -1,0 +1,7 @@
+{
+  "indeed": {"ready": "script", "empty": "#no_results"},
+  "wuzzuf": {"ready": "a[href*='/jobs/p/']", "empty": "[data-testid='no-results']"},
+  "forasna": {"links": "a[href*='/job/p/']", "next": "a[rel='next']"},
+  "bayt": {"links": "a[href*='/jobs/'][href*='-']", "next": "a[rel='next']"},
+  "wellfound": {"links": "a[href*='/jobs/']", "next": "a[rel='next']"}
+}

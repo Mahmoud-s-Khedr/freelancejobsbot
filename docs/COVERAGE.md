@@ -44,3 +44,12 @@ Pending ATS targets and reasons:
 | ashby:api.ashbyhq.com:workos | Error: Employer association not confirmed by public HTML |
 
 Production rollout was started on 2026-10-06 after backing up and migrating the real database. See [the rollout record](ROLLOUT.md) for the operational status; the smoke counts above describe the earlier isolated verification.
+
+
+## Website expansion — 2026-10-07
+
+Six additional opt-in targets are implemented, bringing the tracked target count to 89; the original 69 enabled targets are unchanged. Indeed and WUZZUF reuse RTJobs extraction approaches; LinkedIn supports public guest cards and authenticated detail panels. Forasna, Bayt, and Wellfound follow actual job links and structured job data.
+
+Bounded checks with isolated databases and no notification delivery validated Indeed (15 listings, 10 full details), WUZZUF (15 rich records, with an intentional one-page cap reported incomplete), and Forasna (20 discoveries, one full detail under an intentional detail cap). Public LinkedIn HTML yielded 60 guest cards, but Chromium collection returned HTTP 999; authenticated collection needs session setup and remains unverified. Bayt and Wellfound search pages returned HTTP 200 while the sampled detail requests returned 403; these collectors remain provisional.
+
+These checks do not establish exhaustive pagination, stable access, or historical completeness. New sources remain opt-in. See WEBSITES.md for commands and scope semantics.

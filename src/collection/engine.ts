@@ -124,7 +124,21 @@ export async function persistInventory(
                   description: existing.description ?? "",
                   qualityEvidence: job.qualityEvidence,
                 };
+          const alertAllowed =
+            Boolean(state.baselineAt) ||
+            ["mostaql", "khamsat", "ureed", "nafezly"].includes(t.provider);
+          const recovering = Boolean(
+            existing?.deferredAlert &&
+            rich &&
+            existing.detailStatus === "fallback",
+          );
           const data: any = {
+            detailStatus: rich
+              ? "full"
+              : existing?.detailStatus === "full"
+                ? "full"
+                : "fallback",
+            deferredAlert: existing?.deferredAlert ?? (!rich && alertAllowed),
             title: job.title,
             url: job.url,
             lastSeenAt: now,
@@ -165,6 +179,32 @@ export async function persistInventory(
               budgetText: job.budgetText ?? null,
               status: job.status ?? null,
             });
+          // Relative dates are estimates of one publication event, not fresh publication
+          // on every poll. Keep the original estimate until an absolute source date arrives.
+          if (
+            existing?.publishedAt &&
+            existing.timestampSemantics === "estimated-relative-publication" &&
+            job.timestampSemantics === "estimated-relative-publication" &&
+            rich
+          ) {
+            data.publishedAt = existing.publishedAt;
+            try {
+              const previousEvidence = JSON.parse(
+                existing.qualityEvidence ?? "{}",
+              );
+              if (
+                previousEvidence.observedAt &&
+                job.qualityEvidence &&
+                typeof job.qualityEvidence === "object"
+              )
+                data.qualityEvidence = JSON.stringify({
+                  ...job.qualityEvidence,
+                  observedAt: previousEvidence.observedAt,
+                });
+            } catch {
+              /* Legacy evidence can be plain text. */
+            }
+          }
           const row = existing
             ? await tx.jobPost.update({ where: { id: existing.id }, data })
             : await tx.jobPost.create({
@@ -183,6 +223,7 @@ export async function persistInventory(
             missingFromSourceAt,
             sentAt,
             contentHash,
+            deferredAlert,
             ...snapshot
           } = row;
           const serialized = JSON.stringify(snapshot);
@@ -207,7 +248,7 @@ export async function persistInventory(
             "nafezly",
           ].includes(t.provider);
           if (
-            !existing &&
+            (!existing || recovering) &&
             (state.baselineAt || marketplace) &&
             qualifies(content, t)
           ) {
@@ -222,6 +263,11 @@ export async function persistInventory(
               queued++;
             }
           }
+          if (recovering || (!existing && qualifies(content, t)))
+            await tx.jobPost.update({
+              where: { id: row.id },
+              data: { deferredAlert: false },
+            });
         }
       },
       { timeout: 120_000 },
@@ -296,6 +342,7 @@ export async function drainQueue(
   send: (text: string) => Promise<void>,
   format: (job: any) => string,
 ): Promise<void> {
+  await recoverExhaustedQueue(db);
   for (let i = 0; i < 100; i++) {
     const token = randomUUID();
     const item = await db.$transaction(async (tx) => {
@@ -328,12 +375,28 @@ export async function drainQueue(
       source: item.jobPost.source,
       attempt: item.attempts + 1,
     });
+    // Telegram Retry-After may exceed the original five-minute lease.
+    const heartbeat = setInterval(() => {
+      db.telegramQueue
+        .updateMany({
+          where: { id: item.id, leaseToken: token },
+          data: { leaseUntil: new Date(Date.now() + 5 * 60_000) },
+        })
+        .catch((error) =>
+          logEvent("error", "telegram_lease_renewal_failed", {
+            queueId: item.id,
+            error,
+          }),
+        );
+    }, 60_000);
+    heartbeat.unref();
     try {
       await send(format(item.jobPost));
       await db.$transaction(async (tx) => {
         const owned = await tx.telegramQueue.deleteMany({
           where: { id: item.id, leaseToken: token },
         });
+        if (!owned.count) throw Error("Telegram delivery lease lost");
         if (owned.count)
           await tx.jobPost.update({
             where: { id: item.jobPostId },
@@ -367,6 +430,32 @@ export async function drainQueue(
           ...(item.attempts >= 4 ? { failedAt: new Date() } : {}),
         },
       });
+    } finally {
+      clearInterval(heartbeat);
     }
   }
+}
+
+// A worker can die after incrementing the last attempt but before setting failedAt.
+export async function recoverExhaustedQueue(db: PrismaClient): Promise<number> {
+  const result = await db.telegramQueue.updateMany({
+    where: {
+      failedAt: null,
+      attempts: { gte: 5 },
+      OR: [{ leaseUntil: null }, { leaseUntil: { lte: new Date() } }],
+    },
+    data: { failedAt: new Date(), leaseToken: null, leaseUntil: null },
+  });
+  return result.count;
+}
+export async function retryFailedQueue(
+  db: PrismaClient,
+  id: number,
+): Promise<number> {
+  await recoverExhaustedQueue(db);
+  const result = await db.telegramQueue.updateMany({
+    where: { id, failedAt: { not: null } },
+    data: { failedAt: null, attempts: 0, leaseToken: null, leaseUntil: null },
+  });
+  return result.count;
 }

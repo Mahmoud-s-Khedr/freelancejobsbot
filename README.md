@@ -7,9 +7,11 @@ See [collection setup, commands, configuration and behavior](docs/COLLECTION.md)
 ```sh
 pnpm install
 pnpm db:generate
-DATABASE_URL=file:/absolute/path/jobs.db pnpm exec prisma migrate deploy
+DATABASE_URL=file:/absolute/path/jobs.db pnpm db:deploy
 DATABASE_URL=file:/absolute/path/jobs.db pnpm collect
 ```
+
+See [Indeed, LinkedIn and other website collectors](docs/WEBSITES.md) for browser setup and coverage limits.
 
 Collection works without Telegram credentials. Configure `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`, then use `pnpm dev` for scheduled collection and delivery. Back up an existing database before deploying migrations.
 

@@ -9,7 +9,13 @@ export type Provider =
   | "mostaql"
   | "khamsat"
   | "ureed"
-  | "nafezly";
+  | "nafezly"
+  | "indeed"
+  | "linkedin"
+  | "wuzzuf"
+  | "forasna"
+  | "bayt"
+  | "wellfound";
 export interface Target {
   id: string;
   provider: Provider;

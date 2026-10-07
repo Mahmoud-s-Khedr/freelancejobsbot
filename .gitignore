@@ -19,3 +19,8 @@ scratch
 /tmp/
 __pycache__/
 *.py[cod]
+
+# Browser sessions and private diagnostics
+/.local/
+/playwright-report/
+/test-results/

@@ -156,7 +156,7 @@ test("migrations, baseline recovery, histories, tenant IDs, duplicate alerts and
   const migrations = readdirSync("prisma/migrations")
     .filter((n) => n !== "migration_lock.toml")
     .sort();
-  for (const migration of migrations.filter((n) => !n.includes("collection")))
+  for (const migration of migrations.filter((n) => n < migrations.find((m) => m.includes("collection"))!))
     sqlite.exec(
       readFileSync(`prisma/migrations/${migration}/migration.sql`, "utf8"),
     );
@@ -190,6 +190,8 @@ test("migrations, baseline recovery, histories, tenant IDs, duplicate alerts and
     ).qualityEvidence,
     /discovery/,
   );
+  for (const migration of migrations.filter((n) => n > migrations.find((m) => m.includes("collection"))!))
+    sqlite.exec(readFileSync(`prisma/migrations/${migration}/migration.sql`, "utf8"));
   sqlite.close();
   const db = new PrismaClient({
     adapter: new PrismaBetterSqlite3({ url: `file:${path}` }),

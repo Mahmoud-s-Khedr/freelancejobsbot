@@ -14,7 +14,11 @@
     "db:generate": "prisma generate",
     "collect": "tsx src/collection/cli.ts collect",
     "sources:status": "tsx src/collection/cli.ts status",
-    "export": "tsx src/collection/cli.ts export"
+    "export": "tsx src/collection/cli.ts export",
+    "db:deploy": "tsx scripts/deploy-db.ts",
+    "browser:session": "tsx src/collection/cli.ts browser-session",
+    "queue:retry": "tsx src/collection/cli.ts queue-retry",
+    "alerts:recover": "tsx src/collection/cli.ts alerts-recover"
   },
   "keywords": [],
   "author": "",
@@ -35,12 +39,5 @@
     "prisma": "^7.8.0",
     "tsx": "^4.22.1",
     "typescript": "^6.0.3"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "better-sqlite3",
-      "@prisma/engines",
-      "esbuild"
-    ]
   }
 }

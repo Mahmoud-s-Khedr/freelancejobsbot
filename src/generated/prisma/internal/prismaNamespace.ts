@@ -1073,7 +1073,9 @@ export const JobPostScalarFieldEnum = {
   sourceUpdatedAt: 'sourceUpdatedAt',
   timestampSemantics: 'timestampSemantics',
   qualityEvidence: 'qualityEvidence',
-  missingFromSourceAt: 'missingFromSourceAt'
+  missingFromSourceAt: 'missingFromSourceAt',
+  detailStatus: 'detailStatus',
+  deferredAlert: 'deferredAlert'
 } as const
 
 export type JobPostScalarFieldEnum = (typeof JobPostScalarFieldEnum)[keyof typeof JobPostScalarFieldEnum]

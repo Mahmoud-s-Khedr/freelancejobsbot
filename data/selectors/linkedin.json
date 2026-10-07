@@ -1,0 +1,13 @@
+{
+  "cards": "li[data-occludable-job-id], li.scaffold-layout__list-item:has([data-job-id])",
+  "cardTitle": ".job-card-list__title, .artdeco-entity-lockup__title",
+  "cardCompany": ".artdeco-entity-lockup__subtitle",
+  "cardLocation": ".artdeco-entity-lockup__caption",
+  "identity": ".job-details-jobs-unified-top-card__job-title a[href*='/jobs/view/'], .jobs-unified-top-card__job-title a[href*='/jobs/view/'], h1 a[href*='/jobs/view/']",
+  "title": ".job-details-jobs-unified-top-card__job-title, .jobs-unified-top-card__job-title, h1.t-24.t-bold",
+  "company": ".job-details-jobs-unified-top-card__company-name, .jobs-unified-top-card__company-name, .topcard__org-name-link",
+  "location": ".job-details-jobs-unified-top-card__primary-description-container .tvm__text--low-emphasis:first-child",
+  "posted": ".job-details-jobs-unified-top-card__primary-description-container .tvm__text--positive, span.tvm__text--positive strong",
+  "description": "#job-details",
+  "empty": ".jobs-search-no-results-banner"
+}
