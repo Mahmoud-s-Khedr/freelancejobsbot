@@ -395,3 +395,32 @@ test("authenticated LinkedIn collector passes its remaining detail budget and re
     else process.env.LINKEDIN_MAX_DETAILS = prior;
   }
 });
+
+test("structured collectors prioritize missing details ahead of known full jobs", async () => {
+  for (const [site, search, first, second] of [
+    ["forasna", "https://forasna.com/", "https://forasna.com/job/p/123-software", "https://forasna.com/job/p/456-software"],
+    ["bayt", "https://www.bayt.com/en/egypt/jobs/", "https://www.bayt.com/en/egypt/jobs/software-123/", "https://www.bayt.com/en/egypt/jobs/software-456/"],
+    ["wellfound", "https://wellfound.com/jobs", "https://wellfound.com/jobs/123-software", "https://wellfound.com/jobs/456-software"],
+  ] as const) {
+    const name = `${site.toUpperCase()}_MAX_DETAILS`;
+    const prior = process.env[name];
+    process.env[name] = "1";
+    try {
+      const reads: string[] = [];
+      const inv = await collectWebsite(target(site, search), {
+        read: async (url) => {
+          reads.push(url);
+          return url === search
+            ? `<a href="${first}">Software developer</a><a href="${second}">Software developer</a>`
+            : structured(url);
+        },
+      }, new Set(["123"]));
+      assert.deepEqual(reads, [search, second], site);
+      assert.equal(inv.jobs.find((j) => j.externalId === "456")?.detailStatus, "full", site);
+      assert.equal(inv.jobs.find((j) => j.externalId === "123")?.detailStatus, "fallback", site);
+    } finally {
+      if (prior === undefined) delete process.env[name];
+      else process.env[name] = prior;
+    }
+  }
+});

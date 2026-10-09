@@ -264,6 +264,12 @@ export async function collectWebsite(
           if (pageIds && fingerprints.has(pageIds))
             throw Error("Repeated structured website inventory");
           if (pageIds) fingerprints.add(pageIds);
+          // Spend the bounded detail budget on new/fallback jobs before refreshes.
+          links.sort(
+            (a, b) =>
+              Number(knownFullIds.has(siteJobId(site, a)!)) -
+              Number(knownFullIds.has(siteJobId(site, b)!)),
+          );
           for (const link of links) {
             if (
               inv.jobs.some(
